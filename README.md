@@ -83,11 +83,12 @@ ZGitPet is used as an accelerator for multi-project repository work, project swi
 - [Technology map](docs/TECHNOLOGY.md) — maps PHP, JavaScript, SQL, Node, media tooling, browser APIs, identity, analytics, testing and operations to their actual engineering responsibilities.
 - [Native media engineering](docs/media/NATIVE_MEDIA_ENGINEERING.md) — deep dive into first-party asset identity, resumable 4K ingest, source analysis, rendition benchmarking, verification, attachment, playback authorization and browser-native playback.
 - [Distributed Media Node](docs/media/DISTRIBUTED_MEDIA_NODE.md) — provider routing, HOME/VPS tier placement, replication, failover/recovery, deferred 4K work and storage/egress economics.
+- [MPlayer](docs/player/MPLAYER.md) — persistent Stage/player ownership, adapter boundaries, queue occurrence/context semantics, NEXT FROM vs UP NEXT, Repeat/Shuffle, quality, mobile/desktop HUD behavior and future remote playback.
 - [What is published here](WHAT_IS_PUBLISHED_HERE.md) — the public/private boundary and agent rules.
 - [Public facade implementation plan](MILLENOVA_PUBLIC_FACADE_IMPLEMENTATION_PLAN.md) — the step-by-step, review-first programme used to build this repository.
 - [Shared agent workspace](agents/README.md) — reusable process guidance for agents working on the public facade.
 
-The deeper engineering documents are being added one at a time and reviewed before the next publication step begins. Planned topics include MPlayer, Signal Window, creator workflows, social systems, moderation, testing and product evolution.
+The deeper engineering documents are being added one at a time and reviewed before the next publication step begins. Planned topics now include Signal Window, creator workflows, social systems, moderation, testing and product evolution.
 
 ## Implementation boundary
 
