@@ -1,6 +1,6 @@
 # Millenova Public Facade Implementation Plan
 
-**Status:** 🟡 ACTIVE — PF-5 technology map under review  
+**Status:** 🟡 ACTIVE — PF-6 native media engineering under review  
 **Private implementation authority:** `wilderruiz/millenova`  
 **Public publication authority:** `wilderruiz/millenova-project`  
 **Publication boundary:** [`WHAT_IS_PUBLISHED_HERE.md`](WHAT_IS_PUBLISHED_HERE.md)  
@@ -22,8 +22,8 @@
 | **PF-2** | ✅ | `README.md` | Technical landing page and public entry point | Wilder approved the rendered README and Mermaid corrections |
 | **PF-3** | ✅ | `docs/ENGINEERING_OVERVIEW.md` | Present the engineering breadth at a glance | Wilder approved claims, status labels, diagrams and emphasis |
 | **PF-4** | ✅ | `docs/PLATFORM_ARCHITECTURE.md` | Logical architecture, subsystem responsibilities, control/data planes and major state boundaries | Wilder approved architecture accuracy, state ownership, public safety and diagrams |
-| **PF-5** | 🟡 | `docs/TECHNOLOGY.md` | Map technologies to responsibilities | Wilder reviews active/development/planned technology boundaries and technical accuracy |
-| **PF-6** | ⬜ | `docs/media/NATIVE_MEDIA_ENGINEERING.md` | First-party media identity, ingest, renditions, playback, authorization and recovery | No secrets or bypass-enabling detail |
+| **PF-5** | ✅ | `docs/TECHNOLOGY.md` | Map technologies to responsibilities | Wilder approved active/development/planned technology boundaries and technical accuracy |
+| **PF-6** | 🟡 | `docs/media/NATIVE_MEDIA_ENGINEERING.md` | First-party media identity, ingest, renditions, playback, authorization and recovery | Wilder reviews technical accuracy, status labels, benchmark disclosure and security boundary |
 | **PF-7** | ⬜ | `docs/media/DISTRIBUTED_MEDIA_NODE.md` | HOME_MEDIA, VPS_MEDIA, replication, failover, integrity and storage/egress economics | No private network coordinates |
 | **PF-8** | ⬜ | `docs/player/MPLAYER.md` | Stage/MPlayer, native playback, queue ownership and continuity | Separate shipped behavior from future transport/Cast work |
 | **PF-9** | ⬜ | `docs/feed/SIGNAL_WINDOW.md` | Logical feed store, virtualization, geometry conservation and native-scroll ownership | Preserve accepted and rejected approaches where educational |
@@ -38,7 +38,7 @@
 | **PF-18** | ⏸ | `assets/` + screenshot index | Reviewed screenshots and figures | Every image manually checked for sensitive information |
 | **PF-19** | ⏸ | Public milestone/release index | Concise chronological public progress record | Opens after core engineering docs stabilize |
 
-> **Current next action:** review **PF-5 `docs/TECHNOLOGY.md`**. Correct it if needed. Do **not** start PF-6 until Wilder explicitly approves PF-5.
+> **Current next action:** review **PF-6 `docs/media/NATIVE_MEDIA_ENGINEERING.md`**. Correct it if needed. Do **not** start PF-7 until Wilder explicitly approves PF-6.
 
 ---
 
@@ -175,37 +175,42 @@ Wilder approved the architecture document after review of logical system shape, 
 
 # 11. PF-5 — Technology map
 
-**Status:** 🟡 ACTIVE — draft published for Wilder review
+**Status:** ✅ COMPLETE
 
 Artifact: [`docs/TECHNOLOGY.md`](docs/TECHNOLOGY.md)
 
-The draft maps technology to engineering responsibility rather than presenting a vanity stack list. It covers:
-
-- PHP/server-rendered application authority;
-- vanilla JavaScript stateful browser systems;
-- custom CSS/responsive interaction architecture;
-- PDO + SQL persistence;
-- local SQLite vs production MySQL/MariaDB-compatible schema;
-- Node.js core HTTP media runtime;
-- FFmpeg/FFprobe media computation;
-- browser-native HTMLMediaElement and Media Session APIs;
-- external YouTube/Spotify/SoundCloud adapters;
-- Google Identity Services plus server-side verification;
-- consent-gated analytics/SEO tooling;
-- validators, `node:test`, smoke and runtime verification;
-- Bash/Linux deployment/runtime tooling;
-- Git/GitHub/ZGitPet development workflow;
-- explicit production vs development vs active/planned technology boundaries.
-
-**Review gate:** Wilder checks that every technology has a real responsibility, that production/development/planned status is accurate, that Mermaid renders cleanly and that no operational detail crosses the publication boundary. Corrections land here before PF-6 opens.
+Wilder approved the technology map after review of its responsibility-first framing, production/development/active/planned boundaries, browser/media/runtime ownership and public-safety boundary.
 
 ---
 
 # 12. PF-6 — Native media engineering
 
-**Status:** ⬜ QUEUED
+**Status:** 🟡 ACTIVE — draft published for Wilder review
 
-Document canonical media identity, source/master preservation, 2160p/1080p/preview renditions, source analysis, benchmarking, rendition processing, playback authorization, HTTP range/seek behavior, attachment manifests, native autoplay constraints, truthful quality state and production-smoke progression. Security-sensitive authorization internals stay private.
+Artifact: [`docs/media/NATIVE_MEDIA_ENGINEERING.md`](docs/media/NATIVE_MEDIA_ENGINEERING.md)
+
+The draft turns the first-party media programme into a public technical deep dive covering:
+
+- canonical post vs media-asset vs rendition vs provider identity;
+- large-master resumable upload and recovery semantics;
+- creator ownership, rights and ingest boundaries;
+- FFprobe source classification before processing;
+- the production 4K benchmark/visual-gate decision;
+- verified 2160p + 1080p rendition generation;
+- source/master preservation and explicit cleanup gating;
+- same-post first-party attachment;
+- short-lived playback capability as transport rather than durable identity;
+- HTTP range delivery and browser-owned seeking;
+- `HTMLMediaElement` native playback truth and async generation guards;
+- Stage/MPlayer cutover without creating a second player or social identity;
+- manual HD/4K vs truthful AUTO quality state;
+- browser autoplay-policy recovery;
+- the separate short low-resolution card-preview direction;
+- failure-domain separation and the production verification trail;
+- the validator/Node-test surface behind the media contract;
+- explicit shipped vs planned/queued media boundaries.
+
+**Review gate:** Wilder checks technical accuracy, benchmark wording, source-retention wording, preview status, Stage/MPlayer boundaries, Mermaid readability and disclosure safety. Corrections land here before PF-7 opens.
 
 ---
 
@@ -318,17 +323,19 @@ Engineering depth should be communicated through evidence and clarity rather tha
 
 # 24. Immediate gate
 
-**PF-0 through PF-4 are approved and complete. PF-5 is active.**
+**PF-0 through PF-5 are approved and complete. PF-6 is active.**
 
-The technology map has been drafted from current private-repository implementation evidence and published for Wilder review.
+The native-media engineering deep dive has been drafted from current private-repository implementation evidence and production closeout records and published for Wilder review.
 
 Next actions:
 
-1. review rendered `docs/TECHNOLOGY.md`;
-2. check every production/development/active/planned label;
-3. verify that Node is correctly represented as the media runtime rather than a general replacement for PHP;
-4. inspect every Mermaid graph for clipping/readability;
-5. request corrections if needed;
-6. explicitly approve PF-5 when satisfied.
+1. review rendered `docs/media/NATIVE_MEDIA_ENGINEERING.md`;
+2. check the 4K pilot/benchmark wording and shipped-vs-planned status table;
+3. verify post/media/rendition/provider identity boundaries;
+4. verify source/master preservation and cleanup-gate wording;
+5. inspect all Mermaid/sequence diagrams for clipping/readability;
+6. confirm the authorization section is informative without exposing bypass-enabling detail;
+7. request corrections if needed;
+8. explicitly approve PF-6 when satisfied.
 
-Only then mark **PF-5 ✅ COMPLETE**, set **PF-6 🟡 ACTIVE**, and begin `docs/media/NATIVE_MEDIA_ENGINEERING.md`.
+Only then mark **PF-6 ✅ COMPLETE**, set **PF-7 🟡 ACTIVE**, and begin `docs/media/DISTRIBUTED_MEDIA_NODE.md`.
