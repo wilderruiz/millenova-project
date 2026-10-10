@@ -1,6 +1,6 @@
 # Millenova Distributed Media Node
 
-**Status:** 🟡 PF-7 draft — under Wilder review  
+**Status:** ✅ PF-7 approved  
 **Private implementation authority:** `wilderruiz/millenova`  
 **Public publication authority:** `wilderruiz/millenova-project`  
 **Publication rule:** architecture is public; exploitable configuration is private.
@@ -418,4 +418,4 @@ flowchart TD
 
 ## 24. Related public documents
 
-The DMN document is most useful when read as the infrastructure layer beneath the already-published native-media and platform architecture material. [`NATIVE_MEDIA_ENGINEERING.md`](NATIVE_MEDIA_ENGINEERING.md) explains canonical media identity and playback, [`PLATFORM_ARCHITECTURE.md`](../PLATFORM_ARCHITECTURE.md) explains the broader state boundaries, and [`TECHNOLOGY.md`](../TECHNOLOGY.md) maps the runtime/tooling responsibilities. The public-facade plan and agent guides remain the process authority for how these documents are reviewed and advanced. The next publication step after PF-7 review is `../player/MPLAYER.md`, which moves upward from physical provider infrastructure to persistent playback, queue and transport semantics.
+The DMN document is most useful when read as the infrastructure layer beneath the already-published native-media and platform architecture material. [`NATIVE_MEDIA_ENGINEERING.md`](NATIVE_MEDIA_ENGINEERING.md) explains canonical media identity and playback, [`PLATFORM_ARCHITECTURE.md`](../PLATFORM_ARCHITECTURE.md) explains the broader state boundaries, and [`TECHNOLOGY.md`](../TECHNOLOGY.md) maps the runtime/tooling responsibilities. The public-facade plan and agent guides remain the process authority for how these documents are reviewed and advanced. PF-7 is approved; the active next publication step is [`../player/MPLAYER.md`](../player/MPLAYER.md), which moves upward from physical provider infrastructure to persistent playback, queue and transport semantics.
