@@ -1,6 +1,6 @@
 # Millenova Platform Architecture
 
-**Status:** PF-4 draft — under Wilder review  
+**Status:** ✅ PF-4 approved  
 **Private implementation authority:** `wilderruiz/millenova`  
 **Public publication authority:** `wilderruiz/millenova-project`  
 **Publication rule:** architecture is public; exploitable configuration is private.
@@ -61,8 +61,6 @@ This separation allows one post to retain reactions, playlists, search identity 
 
 ### 2.2 One authoritative owner per state
 
-Examples:
-
 | State | Architectural authority |
 |---|---|
 | Public post identity | Community/application persistence |
@@ -109,8 +107,6 @@ The architecture therefore favors **progressive enhancement plus explicit statef
 ## 4. Community and creator state
 
 The original artist/catalogue foundation became a stateful community system when accounts, creator ownership, publishing, reactions, playlists, reporting and per-user playback/workspace state were added.
-
-Conceptually:
 
 ```mermaid
 flowchart TD
@@ -179,8 +175,6 @@ For native media, the browser media element owns real timing, seeking, buffering
 
 For external providers, provider-specific adapters conform to the player-facing operational contract rather than forcing Stage to become provider-specific.
 
-The important rule is:
-
 > **Playback authority may change without changing post identity.**
 
 ---
@@ -203,13 +197,7 @@ Current engineering includes large-master resumable upload, source analysis, ren
 
 The media lifecycle preserves source/master material until cleanup is explicitly authorized. A successful playback rendition is not by itself permission to destroy the original.
 
-Public product state therefore distinguishes:
-
-- source/master preservation;
-- processing/rendition state;
-- readiness for attachment;
-- readiness for playback;
-- later cleanup/migration decisions.
+Public product state therefore distinguishes source/master preservation, processing/rendition state, readiness for attachment, readiness for playback and later cleanup/migration decisions.
 
 ---
 
@@ -219,15 +207,7 @@ The Distributed Media Node architecture makes a strong distinction between **con
 
 ### Control plane
 
-The control plane answers questions such as:
-
-- which provider is healthy;
-- which rendition exists where;
-- which provider should handle a new request;
-- whether a replica is verified;
-- whether processing capacity is available;
-- what storage/egress state is being observed;
-- whether deferred work should resume after recovery.
+The control plane answers which provider is healthy, which rendition exists where, which provider should handle a new request, whether a replica is verified, whether processing capacity is available, what storage/egress state is being observed and whether deferred work should resume after recovery.
 
 ```mermaid
 flowchart TD
@@ -288,8 +268,6 @@ The browser does not choose between HOME_MEDIA and VPS_MEDIA directly.
 
 A new playback or upload decision is made against logical availability rather than by exposing physical storage details to the browser.
 
-Conceptually:
-
 ```mermaid
 flowchart TD
     NEED["Logical media<br/>request"] --> CHECK["Provider<br/>policy"]
@@ -312,8 +290,6 @@ Important properties:
 
 ## 11. Persistence and state boundaries
 
-The platform uses different persistence scopes for different jobs.
-
 | Scope | Example state | Why separated |
 |---|---|---|
 | Catalogue / public metadata | releases, links, synchronized provider metadata | Stable public presentation data |
@@ -331,30 +307,9 @@ A particularly important rule is that short-lived playback capabilities are **no
 
 The public architecture is intentionally explicit about **what** the system does, while operational secrets remain private.
 
-Public-safe architecture may describe:
+Public-safe architecture may describe server-owned authority decisions, short-lived capability concepts, logical provider routing, health-aware failover, integrity verification, replay resistance as a security goal, least-privilege boundaries, creator ownership checks and moderation/governance layers.
 
-- server-owned authority decisions;
-- short-lived capability concepts;
-- logical provider routing;
-- health-aware failover;
-- integrity verification;
-- replay resistance as a security goal;
-- least-privilege boundaries;
-- creator ownership checks;
-- moderation/governance layers.
-
-This document deliberately does not publish:
-
-- production credentials or signing secrets;
-- private IP addresses/hostnames;
-- exact tunnel/port mappings;
-- secret filesystem locations;
-- privileged deployment commands;
-- sensitive admin endpoints;
-- private user/moderation records;
-- bypass-enabling thresholds or operational recipes.
-
-The architecture rule remains:
+This document deliberately does not publish production credentials/signing secrets, private IP addresses/hostnames, exact tunnel/port mappings, secret filesystem locations, privileged deployment commands, sensitive admin endpoints, private user/moderation records or bypass-enabling operational recipes.
 
 > **Show the system boundary. Do not publish the keys to cross it.**
 
@@ -412,8 +367,6 @@ Again, provider details remain abstracted behind policy.
 
 Millenova did not begin with this architecture fully formed.
 
-The current structure emerged through a sequence of increasingly stateful requirements:
-
 ```text
 artist site
   ↓
@@ -458,19 +411,7 @@ The architectural record should keep these statuses explicit so a future diagram
 
 ## 16. Why this architecture matters
 
-The system is now solving several classes of problem at once:
-
-- durable social identity and creator ownership;
-- progressive/server-rendered public presentation;
-- persistent cross-surface playback;
-- first-party large-media ingest and rendition processing;
-- provider-neutral playback adaptation;
-- distributed storage/origin selection;
-- feed virtualization with stable geometry;
-- browser-native scroll/media behavior;
-- mobile/desktop divergence where interaction physics differ;
-- moderation and governance boundaries;
-- verification across source, runtime, browser, physical device and production.
+The system is now solving several classes of problem at once: durable social identity and creator ownership; progressive/server-rendered public presentation; persistent cross-surface playback; first-party large-media ingest and rendition processing; provider-neutral playback adaptation; distributed storage/origin selection; feed virtualization with stable geometry; browser-native scroll/media behavior; mobile/desktop divergence where interaction physics differ; moderation/governance boundaries; and verification across source, runtime, browser, physical device and production.
 
 The core architectural strategy is not to centralize all of those concerns into one giant runtime. Instead, Millenova defines explicit authorities and contracts so each subsystem can evolve without silently taking ownership of another subsystem's state.
 
@@ -479,8 +420,9 @@ The core architectural strategy is not to centralize all of those concerns into 
 ## 17. Related public documents
 
 - [Engineering overview](ENGINEERING_OVERVIEW.md)
+- [Technology map](TECHNOLOGY.md)
 - [What is published here](../WHAT_IS_PUBLISHED_HERE.md)
 - [Public facade implementation plan](../MILLENOVA_PUBLIC_FACADE_IMPLEMENTATION_PLAN.md)
 - [Mermaid graph guide](../agents/MERMAID_GRAPH_GUIDE.md)
 
-Next planned deep-dives separate this architecture into technology, native-media, Distributed Media Node, MPlayer, Signal Window, creator, social and governance documents.
+Next planned deep-dives separate this architecture into native-media, Distributed Media Node, MPlayer, Signal Window, creator, social and governance documents.
