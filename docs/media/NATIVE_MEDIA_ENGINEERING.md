@@ -1,6 +1,6 @@
 # Millenova Native Media Engineering
 
-**Status:** 🟡 PF-6 draft — under Wilder review  
+**Status:** ✅ PF-6 approved  
 **Private implementation authority:** `wilderruiz/millenova`  
 **Public publication authority:** `wilderruiz/millenova-project`  
 **Publication rule:** architecture is public; exploitable configuration is private.
