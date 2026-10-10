@@ -12,27 +12,19 @@ This repository is the **public engineering facade** for that work. The producti
 
 ```mermaid
 flowchart TD
-    USER[Listener / creator]
-    WEB[Millenova web app]
-    FEED[Discovery + feed]
-    STUDIO[Creator Studio]
-    PLAYER[Stage / MPlayer]
-    SOCIAL[Social state]
-    MEDIA[First-party media]
-    ROUTER[Media provider policy]
-    HOME[HOME_MEDIA]
-    VPS[VPS_MEDIA]
+    USER["Listener<br/>creator"] --> WEB["Millenova<br/>web app"]
 
-    USER --> WEB
-    WEB --> FEED
-    WEB --> STUDIO
-    WEB --> PLAYER
-    WEB --> SOCIAL
-    STUDIO --> MEDIA
+    WEB --> FEED["Discovery<br/>feed"]
+    WEB --> STUDIO["Creator<br/>Studio"]
+    WEB --> PLAYER["Stage<br/>MPlayer"]
+    WEB --> SOCIAL["Social<br/>state"]
+
+    STUDIO --> MEDIA["First-party<br/>media"]
     PLAYER --> MEDIA
-    MEDIA --> ROUTER
-    ROUTER -->|preferred| HOME
-    ROUTER -->|fallback| VPS
+
+    MEDIA --> ROUTER["Media provider<br/>policy"]
+    ROUTER -->|Preferred| HOME["HOME_MEDIA"]
+    ROUTER -->|Fallback| VPS["VPS_MEDIA"]
 ```
 
 This diagram is deliberately logical rather than operational. It shows the public engineering model without publishing production network coordinates, credentials, secrets or other exploit-enabling configuration.
@@ -67,11 +59,11 @@ This repository therefore follows a review-first process:
 
 ```mermaid
 flowchart LR
-    EVIDENCE[Private evidence] --> AUDIT[Agent audit]
-    AUDIT --> DRAFT[Public-safe draft]
-    DRAFT --> REVIEW[Wilder review]
-    REVIEW -->|revise| DRAFT
-    REVIEW -->|approve| PUBLIC[Public record]
+    EVIDENCE["Private<br/>evidence"] --> AUDIT["Agent<br/>audit"]
+    AUDIT --> DRAFT["Public-safe<br/>draft"]
+    DRAFT --> REVIEW["Wilder<br/>review"]
+    REVIEW -->|Revise| DRAFT
+    REVIEW -->|Approve| PUBLIC["Public<br/>record"]
 ```
 
 ZGitPet is used as an accelerator for multi-project repository work, project switching and controlled Get / Save / Send flows, but it does not replace human review or publication approval.
@@ -80,6 +72,8 @@ ZGitPet is used as an accelerator for multi-project repository work, project swi
 
 - [What is published here](WHAT_IS_PUBLISHED_HERE.md) — the public/private boundary and agent rules.
 - [Public facade implementation plan](MILLENOVA_PUBLIC_FACADE_IMPLEMENTATION_PLAN.md) — the step-by-step, review-first programme used to build this repository.
+- [Agent workspace](agents/README.md) — shared working rules for agents contributing to the public facade.
+- [Mermaid graph guide](agents/MERMAID_GRAPH_GUIDE.md) — reusable graph-rendering rules used across this repository.
 
 The deeper engineering documents are being added one at a time and reviewed before the next publication step begins. Planned topics include the engineering overview, logical platform architecture, technology map, native-media pipeline, Distributed Media Node, MPlayer, Signal Window, creator workflows, social systems, moderation, testing and product evolution.
 
