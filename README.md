@@ -53,7 +53,7 @@ This diagram is deliberately logical rather than operational. It shows the publi
 
 ## Current engineering focus
 
-The current infrastructure programme is the **Distributed Media Node (DMN)**: separating logical media identity from physical storage so Millenova can prefer a trusted home media node for storage/processing while retaining the VPS as an independent fallback. Foundation, provider modeling, upload routing, replication and accounting are established; real delivery switching remains gated by player-side transport dependencies.
+The current infrastructure programme is the **Distributed Media Node (DMN)**: separating logical media identity from physical storage so Millenova can prefer a trusted home media node for storage/processing while retaining the VPS as an independent fallback. Provider foundations, upload routing, verified replication/recovery and accounting are established. The production-delivery checkpoint is now open, with the first real HOME/VPS playback-authorization/provider-selection slice active rather than being presented as fully closed.
 
 A related media-policy direction is to avoid spending full 1080p bandwidth on small hover surfaces: card previews are intended to use dedicated short low-resolution preview renditions rather than the full playback rendition.
 
@@ -82,11 +82,12 @@ ZGitPet is used as an accelerator for multi-project repository work, project swi
 - [Platform architecture](docs/PLATFORM_ARCHITECTURE.md) — logical system boundaries, state authorities, media control/data planes, provider policy and cross-system request flows.
 - [Technology map](docs/TECHNOLOGY.md) — maps PHP, JavaScript, SQL, Node, media tooling, browser APIs, identity, analytics, testing and operations to their actual engineering responsibilities.
 - [Native media engineering](docs/media/NATIVE_MEDIA_ENGINEERING.md) — deep dive into first-party asset identity, resumable 4K ingest, source analysis, rendition benchmarking, verification, attachment, playback authorization and browser-native playback.
+- [Distributed Media Node](docs/media/DISTRIBUTED_MEDIA_NODE.md) — provider routing, HOME/VPS tier placement, replication, failover/recovery, deferred 4K work and storage/egress economics.
 - [What is published here](WHAT_IS_PUBLISHED_HERE.md) — the public/private boundary and agent rules.
 - [Public facade implementation plan](MILLENOVA_PUBLIC_FACADE_IMPLEMENTATION_PLAN.md) — the step-by-step, review-first programme used to build this repository.
 - [Shared agent workspace](agents/README.md) — reusable process guidance for agents working on the public facade.
 
-The deeper engineering documents are being added one at a time and reviewed before the next publication step begins. Planned topics include the Distributed Media Node, MPlayer, Signal Window, creator workflows, social systems, moderation, testing and product evolution.
+The deeper engineering documents are being added one at a time and reviewed before the next publication step begins. Planned topics include MPlayer, Signal Window, creator workflows, social systems, moderation, testing and product evolution.
 
 ## Implementation boundary
 
