@@ -1,6 +1,6 @@
 # Millenova Public Facade Implementation Plan
 
-**Status:** 🟡 ACTIVE — PF-6 native media engineering under review  
+**Status:** 🟡 ACTIVE — PF-7 Distributed Media Node under review  
 **Private implementation authority:** `wilderruiz/millenova`  
 **Public publication authority:** `wilderruiz/millenova-project`  
 **Publication boundary:** [`WHAT_IS_PUBLISHED_HERE.md`](WHAT_IS_PUBLISHED_HERE.md)  
@@ -23,8 +23,8 @@
 | **PF-3** | ✅ | `docs/ENGINEERING_OVERVIEW.md` | Present the engineering breadth at a glance | Wilder approved claims, status labels, diagrams and emphasis |
 | **PF-4** | ✅ | `docs/PLATFORM_ARCHITECTURE.md` | Logical architecture, subsystem responsibilities, control/data planes and major state boundaries | Wilder approved architecture accuracy, state ownership, public safety and diagrams |
 | **PF-5** | ✅ | `docs/TECHNOLOGY.md` | Map technologies to responsibilities | Wilder approved active/development/planned technology boundaries and technical accuracy |
-| **PF-6** | 🟡 | `docs/media/NATIVE_MEDIA_ENGINEERING.md` | First-party media identity, ingest, renditions, playback, authorization and recovery | Wilder reviews technical accuracy, status labels, benchmark disclosure and security boundary |
-| **PF-7** | ⬜ | `docs/media/DISTRIBUTED_MEDIA_NODE.md` | HOME_MEDIA, VPS_MEDIA, replication, failover, integrity and storage/egress economics | No private network coordinates |
+| **PF-6** | ✅ | `docs/media/NATIVE_MEDIA_ENGINEERING.md` | First-party media identity, ingest, renditions, playback, authorization and recovery | Wilder approved technical accuracy, benchmark disclosure, status labels and security boundary |
+| **PF-7** | 🟡 | `docs/media/DISTRIBUTED_MEDIA_NODE.md` | HOME_MEDIA, VPS_MEDIA, replication, failover, integrity and storage/egress economics | Wilder reviews current DMN status, provider/tier policy, diagrams and disclosure boundary |
 | **PF-8** | ⬜ | `docs/player/MPLAYER.md` | Stage/MPlayer, native playback, queue ownership and continuity | Separate shipped behavior from future transport/Cast work |
 | **PF-9** | ⬜ | `docs/feed/SIGNAL_WINDOW.md` | Logical feed store, virtualization, geometry conservation and native-scroll ownership | Preserve accepted and rejected approaches where educational |
 | **PF-10** | ⬜ | `docs/feed/SEARCH_AND_DISCOVERY.md` | Search/discovery boundaries, freshness, Beats isolation and taxonomy work | Do not present queued ranking work as implemented |
@@ -38,7 +38,7 @@
 | **PF-18** | ⏸ | `assets/` + screenshot index | Reviewed screenshots and figures | Every image manually checked for sensitive information |
 | **PF-19** | ⏸ | Public milestone/release index | Concise chronological public progress record | Opens after core engineering docs stabilize |
 
-> **Current next action:** review **PF-6 `docs/media/NATIVE_MEDIA_ENGINEERING.md`**. Correct it if needed. Do **not** start PF-7 until Wilder explicitly approves PF-6.
+> **Current next action:** review **PF-7 `docs/media/DISTRIBUTED_MEDIA_NODE.md`**. Correct it if needed. Do **not** start PF-8 until Wilder explicitly approves PF-7.
 
 ---
 
@@ -185,51 +185,47 @@ Wilder approved the technology map after review of its responsibility-first fram
 
 # 12. PF-6 — Native media engineering
 
-**Status:** 🟡 ACTIVE — draft published for Wilder review
+**Status:** ✅ COMPLETE
 
 Artifact: [`docs/media/NATIVE_MEDIA_ENGINEERING.md`](docs/media/NATIVE_MEDIA_ENGINEERING.md)
 
-The draft turns the first-party media programme into a public technical deep dive covering:
-
-- canonical post vs media-asset vs rendition vs provider identity;
-- large-master resumable upload and recovery semantics;
-- creator ownership, rights and ingest boundaries;
-- FFprobe source classification before processing;
-- the production 4K benchmark/visual-gate decision;
-- verified 2160p + 1080p rendition generation;
-- source/master preservation and explicit cleanup gating;
-- same-post first-party attachment;
-- short-lived playback capability as transport rather than durable identity;
-- HTTP range delivery and browser-owned seeking;
-- `HTMLMediaElement` native playback truth and async generation guards;
-- Stage/MPlayer cutover without creating a second player or social identity;
-- manual HD/4K vs truthful AUTO quality state;
-- browser autoplay-policy recovery;
-- the separate short low-resolution card-preview direction;
-- failure-domain separation and the production verification trail;
-- the validator/Node-test surface behind the media contract;
-- explicit shipped vs planned/queued media boundaries.
-
-**Review gate:** Wilder checks technical accuracy, benchmark wording, source-retention wording, preview status, Stage/MPlayer boundaries, Mermaid readability and disclosure safety. Corrections land here before PF-7 opens.
+Wilder approved the native-media deep dive after review of its first-party identity model, resumable 4K transport, source analysis, benchmark/rendition wording, source-retention rules, playback authorization, native browser ownership, Stage/MPlayer boundary, verification trail and public-safety treatment.
 
 ---
 
 # 13. PF-7 — Distributed Media Node
 
-**Status:** ⬜ QUEUED
+**Status:** 🟡 ACTIVE — draft published for Wilder review
 
-```mermaid
-flowchart TD
-    ID["Canonical<br/>media"] --> POLICY["Provider<br/>policy"]
-    POLICY -->|Preferred| HOME["HOME_MEDIA"]
-    POLICY -->|Fallback| VPS["VPS_MEDIA"]
-    HOME --> REP["Verified<br/>replication"]
-    VPS --> REP
-    REP --> STATE["Health +<br/>integrity"]
-    STATE -. updates .-> POLICY
-```
+Artifact: [`docs/media/DISTRIBUTED_MEDIA_NODE.md`](docs/media/DISTRIBUTED_MEDIA_NODE.md)
 
-Document storage/egress constraints, 4K/1080p/preview economics, home-owned preferred capacity, VPS fallback, health, routing, upload fallback, checksums, replication, recovery, accounting and future edge/CDN possibilities. Home egress must never be described as physically free bandwidth.
+The draft documents:
+
+- why distributed media is a separate infrastructure problem from native playback;
+- product/media semantics vs physical-provider semantics;
+- current DMN checkpoint/phase status;
+- control plane vs data plane;
+- HOME_MEDIA and VPS_MEDIA responsibilities;
+- the canonical Preview / 1080p / 4K placement policy;
+- HOME-available vs HOME-unavailable upload paths;
+- deferred premium/4K work as a durable non-failure state;
+- backend-owned provider selection;
+- health, reachability and verified-rendition readiness;
+- checksum/metadata verified replication;
+- fallback vs recovery semantics;
+- the 1080p Hero ceiling vs higher-quality Stage policy;
+- storage and egress economics;
+- preview-bandwidth economics;
+- upload-provider routing without a second ingest lifecycle;
+- public-safe diagnostics without topology disclosure;
+- private transport as an implementation detail beneath logical provider identity;
+- future edge/CDN compatibility;
+- failure-domain separation;
+- current complete/active/queued/gated DMN boundaries.
+
+**Current private-programme truth represented in the draft:** DMN-1/2/3 and DMN-6/7/8 are complete; Checkpoint B is open; DMN-4A is active; DMN-5 remains downstream of DMN-4 proof; catalogue-scale migration remains gated.
+
+**Review gate:** Wilder checks provider/tier policy, current-status accuracy, storage/egress wording, fallback/recovery semantics, Mermaid rendering and whether any infrastructure detail should be made more or less explicit before PF-8 opens.
 
 ---
 
@@ -323,19 +319,20 @@ Engineering depth should be communicated through evidence and clarity rather tha
 
 # 24. Immediate gate
 
-**PF-0 through PF-5 are approved and complete. PF-6 is active.**
+**PF-0 through PF-6 are approved and complete. PF-7 is active.**
 
-The native-media engineering deep dive has been drafted from current private-repository implementation evidence and production closeout records and published for Wilder review.
+The Distributed Media Node deep dive has been drafted from the current private DMN implementation plan, canonical media-tier policy and Checkpoint-B opening record and published for Wilder review.
 
 Next actions:
 
-1. review rendered `docs/media/NATIVE_MEDIA_ENGINEERING.md`;
-2. check the 4K pilot/benchmark wording and shipped-vs-planned status table;
-3. verify post/media/rendition/provider identity boundaries;
-4. verify source/master preservation and cleanup-gate wording;
-5. inspect all Mermaid/sequence diagrams for clipping/readability;
-6. confirm the authorization section is informative without exposing bypass-enabling detail;
-7. request corrections if needed;
-8. explicitly approve PF-6 when satisfied.
+1. review rendered `docs/media/DISTRIBUTED_MEDIA_NODE.md`;
+2. check HOME_MEDIA/VPS_MEDIA responsibilities and the hard 1080p VPS ceiling;
+3. verify Preview / 1080p / 4K placement semantics;
+4. verify that DMN-4A is described as active rather than already production-closed;
+5. check deferred HOME/4K behavior and no-reupload semantics;
+6. inspect storage/egress formulas and Hero-vs-Stage policy;
+7. inspect every Mermaid diagram for clipping/readability;
+8. request corrections if needed;
+9. explicitly approve PF-7 when satisfied.
 
-Only then mark **PF-6 ✅ COMPLETE**, set **PF-7 🟡 ACTIVE**, and begin `docs/media/DISTRIBUTED_MEDIA_NODE.md`.
+Only then mark **PF-7 ✅ COMPLETE**, set **PF-8 🟡 ACTIVE**, and begin `docs/player/MPLAYER.md`.
