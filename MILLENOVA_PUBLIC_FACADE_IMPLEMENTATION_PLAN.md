@@ -55,14 +55,14 @@ The goal is not a sanitized marketing site. The goal is a **technically serious,
 Every planned document follows the same state machine:
 
 ```mermaid
-flowchart LR
-    A[Private evidence<br/>and current code] --> B[Agent audit]
-    B --> C[Public-safe draft]
-    C --> D[Wilder review]
-    D -->|Corrections needed| E[Revise draft]
+flowchart TD
+    A["Private evidence<br/>current code"] --> B["Agent<br/>audit"]
+    B --> C["Public-safe<br/>draft"]
+    C --> D["Wilder<br/>review"]
+    D -->|Revise| E["Correction<br/>pass"]
     E --> D
-    D -->|Approved| F[Mark step complete]
-    F --> G[Open next step]
+    D -->|Approve| F["Step<br/>complete"]
+    F --> G["Open next<br/>step"]
 ```
 
 There is no agent-only completion state.
@@ -86,12 +86,13 @@ Before starting any PF step, the agent must:
 
 1. read `WHAT_IS_PUBLISHED_HERE.md`;
 2. read this implementation plan;
-3. identify the single active PF step;
-4. inspect the relevant private Millenova plans, implementation files, validators, tests and production-result notes;
-5. inspect already-published public docs to avoid contradiction or duplication;
-6. produce a source-backed draft;
-7. run a disclosure audit against the publication boundary;
-8. stop for Wilder's review rather than starting the next PF step automatically.
+3. read `agents/README.md` and any task-specific shared agent guide;
+4. identify the single active PF step;
+5. inspect the relevant private Millenova plans, implementation files, validators, tests and production-result notes;
+6. inspect already-published public docs to avoid contradiction or duplication;
+7. produce a source-backed draft;
+8. run a disclosure audit against the publication boundary;
+9. stop for Wilder's review rather than starting the next PF step automatically.
 
 Agents must not batch-complete multiple queued PF steps unless Wilder explicitly changes the workflow.
 
@@ -142,7 +143,7 @@ Diagram rule:
 
 > **Use diagrams to expose system thinking, not operational secrets.**
 
-Mermaid nodes should use short labels and explicit line breaks so GitHub rendering does not crop text.
+All agents creating Mermaid must follow [`agents/MERMAID_GRAPH_GUIDE.md`](agents/MERMAID_GRAPH_GUIDE.md). In particular: keep node labels short, target one to three words per line, use `<br/>` for intentional wrapping, prefer `flowchart TD` when width becomes risky, and move detailed explanation into prose. Syntactically valid Mermaid is not sufficient; the rendered GitHub graph must be visually inspected for clipping before the documentation step closes.
 
 ---
 
@@ -232,7 +233,7 @@ Current draft includes:
 - concise explanation of its evolution;
 - high-level engineering surface diagram;
 - current active engineering focus;
-- links to the accepted public boundary and implementation plan;
+- links to the accepted public boundary, implementation plan and shared agent workspace;
 - explicit note that the implementation repository remains private;
 - no exaggerated scale/user claims;
 - no unsupported performance claims.
@@ -276,15 +277,18 @@ Expected public-safe logical architecture:
 
 ```mermaid
 flowchart TD
-    U[Listener / creator] --> WEB[Millenova web application]
-    WEB --> SOCIAL[Community + social state]
-    WEB --> PLAYER[Stage / MPlayer]
-    WEB --> STUDIO[Creator Studio]
-    STUDIO --> MEDIA[Media lifecycle]
-    PLAYER --> MEDIA
-    MEDIA --> ROUTER[Media provider policy]
-    ROUTER --> HOME[HOME_MEDIA]
-    ROUTER --> VPS[VPS_MEDIA]
+    U["Listener<br/>creator"] --> WEB["Millenova<br/>web app"]
+
+    WEB --> SOCIAL["Community<br/>social"]
+    WEB --> PLAYER["Stage<br/>MPlayer"]
+    WEB --> STUDIO["Creator<br/>Studio"]
+
+    PLAYER --> MEDIA["Media<br/>lifecycle"]
+    STUDIO --> MEDIA
+
+    MEDIA --> ROUTER["Media provider<br/>policy"]
+    ROUTER --> HOME["HOME_MEDIA"]
+    ROUTER --> VPS["VPS_MEDIA"]
 ```
 
 The final diagram must be grounded in the current implementation and refined during the PF-4 audit.
@@ -354,13 +358,13 @@ Core concept:
 
 ```mermaid
 flowchart TD
-    ID[Canonical media identity] --> POLICY[Provider policy]
-    POLICY -->|Preferred| HOME[HOME_MEDIA]
-    POLICY -->|Fallback| VPS[VPS_MEDIA]
-    HOME --> REP[Verified replication]
+    ID["Canonical<br/>media"] --> POLICY["Provider<br/>policy"]
+    POLICY -->|Preferred| HOME["HOME_MEDIA"]
+    POLICY -->|Fallback| VPS["VPS_MEDIA"]
+    HOME --> REP["Verified<br/>replication"]
     VPS --> REP
-    REP --> HEALTH[Health + integrity state]
-    HEALTH --> POLICY
+    REP --> HEALTH["Health<br/>integrity"]
+    HEALTH -.updates.-> POLICY
 ```
 
 Topics:
@@ -515,12 +519,12 @@ Expected ladder:
 
 ```mermaid
 flowchart TD
-    S[Source / static checks] --> U[Unit + contract validators]
-    U --> L[Local runtime smoke]
-    L --> B[Browser integration smoke]
-    B --> D[Physical-device smoke]
-    D --> P[Production smoke]
-    P --> C[Documented closeout]
+    S["Source<br/>static checks"] --> U["Unit + contract<br/>tests"]
+    U --> L["Local runtime<br/>smoke"]
+    L --> B["Browser<br/>integration"]
+    B --> D["Physical-device<br/>smoke"]
+    D --> P["Production<br/>smoke"]
+    P --> C["Documented<br/>closeout"]
 ```
 
 Not every feature uses every level; the document must describe actual evidence, not an idealized process.
@@ -613,11 +617,14 @@ It should communicate engineering depth through evidence and clarity rather than
 
 The full public `README.md` draft has been published from private-repository evidence and is now waiting for Wilder's review.
 
+The Mermaid rendering corrections discovered during PF-2 have been captured in `agents/MERMAID_GRAPH_GUIDE.md` and applied to both the README and this implementation plan so later agents inherit the fix rather than rediscovering it.
+
 Next actions:
 
 1. review the rendered `README.md` on GitHub;
-2. request any corrections or additions;
-3. re-check the publication boundary after corrections;
-4. explicitly approve PF-2 when satisfied.
+2. visually inspect the corrected Mermaid graphs for clipping;
+3. request any remaining corrections or additions;
+4. re-check the publication boundary after corrections;
+5. explicitly approve PF-2 when satisfied.
 
 Only then mark **PF-2 ✅ COMPLETE**, set **PF-3 🟡 ACTIVE**, and begin `docs/ENGINEERING_OVERVIEW.md`.
