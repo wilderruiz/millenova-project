@@ -1,6 +1,6 @@
 # Millenova Public Facade Implementation Plan
 
-**Status:** 🟡 ACTIVE — PF-4 platform architecture under review  
+**Status:** 🟡 ACTIVE — PF-5 technology map under review  
 **Private implementation authority:** `wilderruiz/millenova`  
 **Public publication authority:** `wilderruiz/millenova-project`  
 **Publication boundary:** [`WHAT_IS_PUBLISHED_HERE.md`](WHAT_IS_PUBLISHED_HERE.md)  
@@ -21,8 +21,8 @@
 | **PF-1** | ✅ | `MILLENOVA_PUBLIC_FACADE_IMPLEMENTATION_PLAN.md` | Make the publication process visible, reviewable and agent-friendly | Wilder approved the step order |
 | **PF-2** | ✅ | `README.md` | Technical landing page and public entry point | Wilder approved the rendered README and Mermaid corrections |
 | **PF-3** | ✅ | `docs/ENGINEERING_OVERVIEW.md` | Present the engineering breadth at a glance | Wilder approved claims, status labels, diagrams and emphasis |
-| **PF-4** | 🟡 | `docs/PLATFORM_ARCHITECTURE.md` | Logical architecture, subsystem responsibilities, control/data planes and major state boundaries | Wilder reviews architecture accuracy, state ownership, public safety and diagrams |
-| **PF-5** | ⬜ | `docs/TECHNOLOGY.md` | Map technologies to responsibilities | Distinguish active, legacy, planned and experimental technology |
+| **PF-4** | ✅ | `docs/PLATFORM_ARCHITECTURE.md` | Logical architecture, subsystem responsibilities, control/data planes and major state boundaries | Wilder approved architecture accuracy, state ownership, public safety and diagrams |
+| **PF-5** | 🟡 | `docs/TECHNOLOGY.md` | Map technologies to responsibilities | Wilder reviews active/development/planned technology boundaries and technical accuracy |
 | **PF-6** | ⬜ | `docs/media/NATIVE_MEDIA_ENGINEERING.md` | First-party media identity, ingest, renditions, playback, authorization and recovery | No secrets or bypass-enabling detail |
 | **PF-7** | ⬜ | `docs/media/DISTRIBUTED_MEDIA_NODE.md` | HOME_MEDIA, VPS_MEDIA, replication, failover, integrity and storage/egress economics | No private network coordinates |
 | **PF-8** | ⬜ | `docs/player/MPLAYER.md` | Stage/MPlayer, native playback, queue ownership and continuity | Separate shipped behavior from future transport/Cast work |
@@ -38,7 +38,7 @@
 | **PF-18** | ⏸ | `assets/` + screenshot index | Reviewed screenshots and figures | Every image manually checked for sensitive information |
 | **PF-19** | ⏸ | Public milestone/release index | Concise chronological public progress record | Opens after core engineering docs stabilize |
 
-> **Current next action:** review **PF-4 `docs/PLATFORM_ARCHITECTURE.md`**. Correct it if needed. Do **not** start PF-5 until Wilder explicitly approves PF-4.
+> **Current next action:** review **PF-5 `docs/TECHNOLOGY.md`**. Correct it if needed. Do **not** start PF-6 until Wilder explicitly approves PF-5.
 
 ---
 
@@ -107,20 +107,7 @@ Public documents must not collapse these into vague statements such as "supports
 
 # 5. Documentation design rules
 
-Preferred presentation tools:
-
-- concise overview paragraphs;
-- Markdown tables;
-- Mermaid flowcharts/state diagrams;
-- sequence diagrams where useful;
-- compact mathematical models when they materially explain behavior;
-- before/after comparisons;
-- decision tables;
-- verification ladders;
-- failure/recovery diagrams;
-- timelines;
-- reviewed screenshots with captions;
-- strong cross-links between related technical documents.
+Preferred presentation tools include concise overview paragraphs, Markdown tables, Mermaid flowcharts/state diagrams, sequence diagrams, compact mathematical models, before/after comparisons, decision tables, verification ladders, failure/recovery diagrams, timelines, reviewed screenshots and strong cross-links between related technical documents.
 
 > **Diagram rule:** expose system thinking, not operational secrets.
 
@@ -130,26 +117,7 @@ Mermaid nodes must follow [`agents/MERMAID_GRAPH_GUIDE.md`](agents/MERMAID_GRAPH
 
 # 6. Architecture disclosure model
 
-Millenova may publish real logical architecture, including:
-
-- PHP/browser application surfaces;
-- Node media services;
-- logical provider routing;
-- first-party media identity;
-- native playback;
-- upload/rendition lifecycle;
-- Creator Studio;
-- Home logical feed store;
-- render-window virtualization;
-- Stage/MPlayer state ownership;
-- reactions/playlists;
-- search/discovery boundaries;
-- moderation/governance layers;
-- HOME_MEDIA/VPS_MEDIA roles;
-- replication and integrity state;
-- fallback semantics;
-- health/readiness state;
-- testing/deployment gates.
+Millenova may publish real logical architecture including PHP/browser application surfaces, Node media services, logical provider routing, first-party media identity, native playback, upload/rendition lifecycle, Creator Studio, Home logical feed store, render-window virtualization, Stage/MPlayer state ownership, reactions/playlists, search/discovery boundaries, moderation/governance layers, HOME_MEDIA/VPS_MEDIA roles, replication/integrity state, fallback semantics, health/readiness state and testing/deployment gates.
 
 The public repo must omit credentials, private network coordinates, private filesystem paths, signing material, sensitive user data and exploit-enabling security detail.
 
@@ -181,9 +149,7 @@ ZGitPet accelerates the process but is not the publication authority. The author
 
 **Status:** ✅ COMPLETE
 
-The README now provides a concise description of Millenova, product-evolution context, a public-safe engineering surface diagram, current DMN focus, a technical-area summary table, links to the publication rules/plan/agent workspace/engineering overview and an explicit private-implementation boundary.
-
-Mermaid clipping discovered during review was fixed and converted into reusable agent guidance under `agents/MERMAID_GRAPH_GUIDE.md`.
+The README provides the concise public technical landing page. Mermaid clipping discovered during review was fixed and converted into reusable agent guidance under `agents/MERMAID_GRAPH_GUIDE.md`.
 
 ---
 
@@ -195,44 +161,43 @@ Artifact: [`docs/ENGINEERING_OVERVIEW.md`](docs/ENGINEERING_OVERVIEW.md)
 
 Wilder approved the engineering overview after review of its technical emphasis, status wording, public-safety boundary and rendered Mermaid diagrams.
 
-It establishes the vocabulary used by later documents across the application foundation, community state, Signal Window, first-party media, Stage/MPlayer, Distributed Media Node, governance, verification and multidisciplinary engineering concerns.
-
 ---
 
 # 10. PF-4 — Platform architecture
 
-**Status:** 🟡 ACTIVE — draft published for Wilder review
+**Status:** ✅ COMPLETE
 
 Artifact: [`docs/PLATFORM_ARCHITECTURE.md`](docs/PLATFORM_ARCHITECTURE.md)
 
-The draft covers:
-
-- overall logical system shape;
-- canonical identity vs presentation/storage;
-- authoritative state ownership;
-- failure-domain separation;
-- server-rendered application and progressive-enhancement boundary;
-- community/creator state;
-- Home logical feed architecture;
-- Stage/MPlayer playback authority;
-- first-party media lifecycle;
-- media control plane vs data plane;
-- HOME_MEDIA/VPS_MEDIA logical providers;
-- provider selection/fallback;
-- persistence/state scopes;
-- public-safe security boundary;
-- public playback and creator-upload sequence diagrams;
-- architecture evolution and current gates.
-
-**Review gate:** Wilder checks architectural truth, clarity, subsystem/state ownership, Mermaid rendering and disclosure safety. Corrections land here before PF-5 opens.
+Wilder approved the architecture document after review of logical system shape, state authorities, failure-domain separation, server/browser boundaries, community/creator state, Home feed ownership, Stage/MPlayer playback authority, media lifecycle, control/data planes, provider policy, persistence scopes and disclosure safety.
 
 ---
 
 # 11. PF-5 — Technology map
 
-**Status:** ⬜ QUEUED
+**Status:** 🟡 ACTIVE — draft published for Wilder review
 
-Map technologies by responsibility, not as a vanity stack list. Audit PHP/server-rendered surfaces, JavaScript/ES modules, CSS/responsive UI, Node media services, SQL persistence, FFmpeg/FFprobe processing, resumable uploads, browser media APIs, OAuth/identity, validator/test tooling, SEO/analytics and Git/GitHub/ZGitPet workflow.
+Artifact: [`docs/TECHNOLOGY.md`](docs/TECHNOLOGY.md)
+
+The draft maps technology to engineering responsibility rather than presenting a vanity stack list. It covers:
+
+- PHP/server-rendered application authority;
+- vanilla JavaScript stateful browser systems;
+- custom CSS/responsive interaction architecture;
+- PDO + SQL persistence;
+- local SQLite vs production MySQL/MariaDB-compatible schema;
+- Node.js core HTTP media runtime;
+- FFmpeg/FFprobe media computation;
+- browser-native HTMLMediaElement and Media Session APIs;
+- external YouTube/Spotify/SoundCloud adapters;
+- Google Identity Services plus server-side verification;
+- consent-gated analytics/SEO tooling;
+- validators, `node:test`, smoke and runtime verification;
+- Bash/Linux deployment/runtime tooling;
+- Git/GitHub/ZGitPet development workflow;
+- explicit production vs development vs active/planned technology boundaries.
+
+**Review gate:** Wilder checks that every technology has a real responsibility, that production/development/planned status is accurate, that Mermaid renders cleanly and that no operational detail crosses the publication boundary. Corrections land here before PF-6 opens.
 
 ---
 
@@ -353,17 +318,17 @@ Engineering depth should be communicated through evidence and clarity rather tha
 
 # 24. Immediate gate
 
-**PF-0 through PF-3 are approved and complete. PF-4 is active.**
+**PF-0 through PF-4 are approved and complete. PF-5 is active.**
 
-The platform architecture has been drafted from current private-repository evidence and published for Wilder review.
+The technology map has been drafted from current private-repository implementation evidence and published for Wilder review.
 
 Next actions:
 
-1. review rendered `docs/PLATFORM_ARCHITECTURE.md`;
-2. check subsystem boundaries and state ownership;
-3. inspect control/data-plane and provider/fallback wording;
-4. inspect all Mermaid/sequence diagrams for clipping/readability;
+1. review rendered `docs/TECHNOLOGY.md`;
+2. check every production/development/active/planned label;
+3. verify that Node is correctly represented as the media runtime rather than a general replacement for PHP;
+4. inspect every Mermaid graph for clipping/readability;
 5. request corrections if needed;
-6. explicitly approve PF-4 when satisfied.
+6. explicitly approve PF-5 when satisfied.
 
-Only then mark **PF-4 ✅ COMPLETE**, set **PF-5 🟡 ACTIVE**, and begin `docs/TECHNOLOGY.md`.
+Only then mark **PF-5 ✅ COMPLETE**, set **PF-6 🟡 ACTIVE**, and begin `docs/media/NATIVE_MEDIA_ENGINEERING.md`.
