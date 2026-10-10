@@ -1,6 +1,6 @@
 # Millenova Engineering Overview
 
-**Status:** PF-3 draft — under Wilder review  
+**Status:** ✅ PF-3 approved  
 **Private implementation authority:** `wilderruiz/millenova`  
 **Public publication authority:** `wilderruiz/millenova-project`  
 **Publication rule:** architecture is public; exploitable configuration is private.
@@ -274,7 +274,7 @@ The complexity comes less from any single technology than from the number of sta
 
 This overview intentionally stays broad. The next public documents are planned to separate the detail into focused technical records:
 
-1. `PLATFORM_ARCHITECTURE.md`
+1. [Platform architecture](PLATFORM_ARCHITECTURE.md)
 2. `TECHNOLOGY.md`
 3. `media/NATIVE_MEDIA_ENGINEERING.md`
 4. `media/DISTRIBUTED_MEDIA_NODE.md`
