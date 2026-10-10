@@ -1,6 +1,6 @@
 # Millenova Public Facade Implementation Plan
 
-**Status:** 🟡 ACTIVE — foundation started  
+**Status:** 🟡 ACTIVE — PF-2 README under review  
 **Private implementation authority:** `wilderruiz/millenova`  
 **Public publication authority:** `wilderruiz/millenova-project`  
 **Publication boundary:** [`WHAT_IS_PUBLISHED_HERE.md`](WHAT_IS_PUBLISHED_HERE.md)  
@@ -16,8 +16,8 @@
 | Step | Status | Public artifact | Purpose | Approval gate |
 |---|---:|---|---|---|
 | **PF-0** | ✅ | `WHAT_IS_PUBLISHED_HERE.md` | Define the public/private boundary and agent rules | Boundary accepted before any deeper publication |
-| **PF-1** | 🟡 | `MILLENOVA_PUBLIC_FACADE_IMPLEMENTATION_PLAN.md` | Make the publication process itself visible, reviewable and agent-friendly | Wilder reviews this plan and approves the step order |
-| **PF-2** | ⬜ | `README.md` | Turn the repository landing page into a concise technical/project overview | Must link to all accepted public engineering docs |
+| **PF-1** | ✅ | `MILLENOVA_PUBLIC_FACADE_IMPLEMENTATION_PLAN.md` | Make the publication process itself visible, reviewable and agent-friendly | Wilder reviewed and approved the step order |
+| **PF-2** | 🟡 | `README.md` | Turn the repository landing page into a concise technical/project overview | Wilder reviews/corrects the draft before PF-3 starts |
 | **PF-3** | ⬜ | `docs/ENGINEERING_OVERVIEW.md` | Present the full engineering breadth at a glance | No unsafe operational detail; all claims source-backed |
 | **PF-4** | ⬜ | `docs/PLATFORM_ARCHITECTURE.md` | Publish logical architecture, subsystem responsibilities, control/data planes and major state boundaries | Architecture may be explicit; exploitable configuration may not |
 | **PF-5** | ⬜ | `docs/TECHNOLOGY.md` | Map technologies to responsibilities rather than listing a stack without context | Must distinguish active, legacy, planned and experimental technology |
@@ -36,7 +36,7 @@
 | **PF-18** | ⏸ | `assets/` + screenshot index | Add selected screenshots/figures/diagrams after document structure is stable | Every image manually checked for private/sensitive information |
 | **PF-19** | ⏸ | Public milestone/release index | Add a concise chronological public progress record | Only after core engineering docs are reviewed |
 
-> **Current next action:** review **PF-0** and **PF-1**. Do **not** start PF-2 until Wilder approves the publication boundary and this plan.
+> **Current next action:** review the **PF-2 `README.md` draft**. Correct it if needed. Do **not** start PF-3 until Wilder explicitly approves PF-2.
 
 ---
 
@@ -222,22 +222,24 @@ A later engineering-log entry may document this workflow itself as an example of
 
 # 8. PF-2 — README
 
-**Status:** ⬜ QUEUED
+**Status:** 🟡 ACTIVE — draft published for Wilder review
 
-After PF-0/PF-1 approval, rewrite the starter README into the public landing page.
+The starter README has been rewritten into the public landing page.
 
-Required content:
+Current draft includes:
 
 - concise statement of what Millenova is today;
 - concise explanation of its evolution;
 - high-level engineering surface diagram;
 - current active engineering focus;
-- links to the public architecture/engineering documents as they become available;
+- links to the accepted public boundary and implementation plan;
 - explicit note that the implementation repository remains private;
 - no exaggerated scale/user claims;
 - no unsupported performance claims.
 
-The README should be brief enough to scan but strong enough that a technical reader immediately sees this is more than a basic music website.
+The README should remain brief enough to scan but strong enough that a technical reader immediately sees this is more than a basic music website.
+
+**Review gate:** Wilder reads the rendered GitHub README, requests corrections if needed, then explicitly approves PF-2 before PF-3 opens.
 
 ---
 
@@ -607,13 +609,15 @@ It should communicate engineering depth through evidence and clarity rather than
 
 # 24. Immediate gate
 
-**PF-0 is now created. PF-1 is now drafted.**
+**PF-0 and PF-1 are approved and complete. PF-2 is active.**
 
-Wilder reviews:
+The full public `README.md` draft has been published from private-repository evidence and is now waiting for Wilder's review.
 
-1. `WHAT_IS_PUBLISHED_HERE.md`
-2. `MILLENOVA_PUBLIC_FACADE_IMPLEMENTATION_PLAN.md`
+Next actions:
 
-If corrections are needed, revise them first.
+1. review the rendered `README.md` on GitHub;
+2. request any corrections or additions;
+3. re-check the publication boundary after corrections;
+4. explicitly approve PF-2 when satisfied.
 
-If approved, mark **PF-1 ✅ COMPLETE**, set **PF-2 🟡 ACTIVE**, and draft the full public `README.md` — then stop again for review.
+Only then mark **PF-2 ✅ COMPLETE**, set **PF-3 🟡 ACTIVE**, and begin `docs/ENGINEERING_OVERVIEW.md`.
