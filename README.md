@@ -12,19 +12,27 @@ This repository is the **public engineering facade** for that work. The producti
 
 ```mermaid
 flowchart TD
-    USER["Listener<br/>creator"] --> WEB["Millenova<br/>web app"]
+    USER["Listener<br/>creator"]
+    WEB["Millenova<br/>web app"]
+    FEED["Discovery<br/>feed"]
+    STUDIO["Creator<br/>Studio"]
+    PLAYER["Stage<br/>MPlayer"]
+    SOCIAL["Social<br/>state"]
+    MEDIA["First-party<br/>media"]
+    ROUTER["Media provider<br/>policy"]
+    HOME["HOME_MEDIA"]
+    VPS["VPS_MEDIA"]
 
-    WEB --> FEED["Discovery<br/>feed"]
-    WEB --> STUDIO["Creator<br/>Studio"]
-    WEB --> PLAYER["Stage<br/>MPlayer"]
-    WEB --> SOCIAL["Social<br/>state"]
-
-    STUDIO --> MEDIA["First-party<br/>media"]
+    USER --> WEB
+    WEB --> FEED
+    WEB --> STUDIO
+    WEB --> PLAYER
+    WEB --> SOCIAL
+    STUDIO --> MEDIA
     PLAYER --> MEDIA
-
-    MEDIA --> ROUTER["Media provider<br/>policy"]
-    ROUTER -->|Preferred| HOME["HOME_MEDIA"]
-    ROUTER -->|Fallback| VPS["VPS_MEDIA"]
+    MEDIA --> ROUTER
+    ROUTER -->|Preferred| HOME
+    ROUTER -->|Fallback| VPS
 ```
 
 This diagram is deliberately logical rather than operational. It shows the public engineering model without publishing production network coordinates, credentials, secrets or other exploit-enabling configuration.
@@ -45,7 +53,7 @@ This diagram is deliberately logical rather than operational. It shows the publi
 
 ## Current engineering focus
 
-The current infrastructure programme is the **Distributed Media Node (DMN)**: separating logical media identity from physical storage so Millenova can prefer a trusted home media node for storage/processing while retaining the VPS as an independent fallback. Foundation, routing and replication work have progressed into active observability/accounting work, while actual delivery switching remains gated by player-side dependencies.
+The current infrastructure programme is the **Distributed Media Node (DMN)**: separating logical media identity from physical storage so Millenova can prefer a trusted home media node for storage/processing while retaining the VPS as an independent fallback. Foundation, provider modeling, upload routing, replication and accounting are established; real delivery switching remains gated by player-side transport dependencies.
 
 A related media-policy direction is to avoid spending full 1080p bandwidth on small hover surfaces: card previews are intended to use dedicated short low-resolution preview renditions rather than the full playback rendition.
 
@@ -58,7 +66,7 @@ Millenova has accumulated substantial implementation plans, validators, smoke-te
 This repository therefore follows a review-first process:
 
 ```mermaid
-flowchart LR
+flowchart TD
     EVIDENCE["Private<br/>evidence"] --> AUDIT["Agent<br/>audit"]
     AUDIT --> DRAFT["Public-safe<br/>draft"]
     DRAFT --> REVIEW["Wilder<br/>review"]
@@ -70,12 +78,12 @@ ZGitPet is used as an accelerator for multi-project repository work, project swi
 
 ## Start here
 
+- [Engineering overview](docs/ENGINEERING_OVERVIEW.md) — broad technical map, subsystem inventory, current status, constraints and verification model.
 - [What is published here](WHAT_IS_PUBLISHED_HERE.md) — the public/private boundary and agent rules.
 - [Public facade implementation plan](MILLENOVA_PUBLIC_FACADE_IMPLEMENTATION_PLAN.md) — the step-by-step, review-first programme used to build this repository.
-- [Agent workspace](agents/README.md) — shared working rules for agents contributing to the public facade.
-- [Mermaid graph guide](agents/MERMAID_GRAPH_GUIDE.md) — reusable graph-rendering rules used across this repository.
+- [Shared agent workspace](agents/README.md) — reusable process guidance for agents working on the public facade.
 
-The deeper engineering documents are being added one at a time and reviewed before the next publication step begins. Planned topics include the engineering overview, logical platform architecture, technology map, native-media pipeline, Distributed Media Node, MPlayer, Signal Window, creator workflows, social systems, moderation, testing and product evolution.
+The deeper engineering documents are being added one at a time and reviewed before the next publication step begins. Planned topics include logical platform architecture, technology map, native-media pipeline, Distributed Media Node, MPlayer, Signal Window, creator workflows, social systems, moderation, testing and product evolution.
 
 ## Implementation boundary
 
