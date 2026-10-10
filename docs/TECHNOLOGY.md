@@ -1,6 +1,6 @@
 # Millenova Technology Map
 
-**Status:** PF-5 draft — under Wilder review  
+**Status:** ✅ PF-5 approved  
 **Private implementation authority:** `wilderruiz/millenova`  
 **Public publication authority:** `wilderruiz/millenova-project`  
 **Publication rule:** architecture is public; exploitable configuration is private.
@@ -448,4 +448,4 @@ It does not publish:
 
 For system relationships rather than technologies, see [`PLATFORM_ARCHITECTURE.md`](PLATFORM_ARCHITECTURE.md). For the broad engineering inventory, see [`ENGINEERING_OVERVIEW.md`](ENGINEERING_OVERVIEW.md).
 
-The next public-facade step after review is the first deep media document: `media/NATIVE_MEDIA_ENGINEERING.md`.
+The next public-facade step is the first deep media document: [`media/NATIVE_MEDIA_ENGINEERING.md`](media/NATIVE_MEDIA_ENGINEERING.md).
