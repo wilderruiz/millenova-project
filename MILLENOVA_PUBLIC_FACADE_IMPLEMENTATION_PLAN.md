@@ -1,6 +1,6 @@
 # Millenova Public Facade Implementation Plan
 
-**Status:** 🟡 ACTIVE — PF-3 engineering overview under review  
+**Status:** 🟡 ACTIVE — PF-4 platform architecture under review  
 **Private implementation authority:** `wilderruiz/millenova`  
 **Public publication authority:** `wilderruiz/millenova-project`  
 **Publication boundary:** [`WHAT_IS_PUBLISHED_HERE.md`](WHAT_IS_PUBLISHED_HERE.md)  
@@ -20,8 +20,8 @@
 | **PF-0** | ✅ | `WHAT_IS_PUBLISHED_HERE.md` | Define the public/private boundary and agent rules | Boundary accepted before deeper publication |
 | **PF-1** | ✅ | `MILLENOVA_PUBLIC_FACADE_IMPLEMENTATION_PLAN.md` | Make the publication process visible, reviewable and agent-friendly | Wilder approved the step order |
 | **PF-2** | ✅ | `README.md` | Technical landing page and public entry point | Wilder approved the rendered README and Mermaid corrections |
-| **PF-3** | 🟡 | `docs/ENGINEERING_OVERVIEW.md` | Present the engineering breadth at a glance | Wilder reviews claims, status labels, diagrams and emphasis |
-| **PF-4** | ⬜ | `docs/PLATFORM_ARCHITECTURE.md` | Logical architecture, subsystem responsibilities, control/data planes and major state boundaries | Architecture may be explicit; exploitable configuration may not |
+| **PF-3** | ✅ | `docs/ENGINEERING_OVERVIEW.md` | Present the engineering breadth at a glance | Wilder approved claims, status labels, diagrams and emphasis |
+| **PF-4** | 🟡 | `docs/PLATFORM_ARCHITECTURE.md` | Logical architecture, subsystem responsibilities, control/data planes and major state boundaries | Wilder reviews architecture accuracy, state ownership, public safety and diagrams |
 | **PF-5** | ⬜ | `docs/TECHNOLOGY.md` | Map technologies to responsibilities | Distinguish active, legacy, planned and experimental technology |
 | **PF-6** | ⬜ | `docs/media/NATIVE_MEDIA_ENGINEERING.md` | First-party media identity, ingest, renditions, playback, authorization and recovery | No secrets or bypass-enabling detail |
 | **PF-7** | ⬜ | `docs/media/DISTRIBUTED_MEDIA_NODE.md` | HOME_MEDIA, VPS_MEDIA, replication, failover, integrity and storage/egress economics | No private network coordinates |
@@ -38,7 +38,7 @@
 | **PF-18** | ⏸ | `assets/` + screenshot index | Reviewed screenshots and figures | Every image manually checked for sensitive information |
 | **PF-19** | ⏸ | Public milestone/release index | Concise chronological public progress record | Opens after core engineering docs stabilize |
 
-> **Current next action:** review **PF-3 `docs/ENGINEERING_OVERVIEW.md`**. Correct it if needed. Do **not** start PF-4 until Wilder explicitly approves PF-3.
+> **Current next action:** review **PF-4 `docs/PLATFORM_ARCHITECTURE.md`**. Correct it if needed. Do **not** start PF-5 until Wilder explicitly approves PF-4.
 
 ---
 
@@ -189,36 +189,42 @@ Mermaid clipping discovered during review was fixed and converted into reusable 
 
 # 9. PF-3 — Engineering overview
 
-**Status:** 🟡 ACTIVE — draft published for Wilder review
+**Status:** ✅ COMPLETE
 
 Artifact: [`docs/ENGINEERING_OVERVIEW.md`](docs/ENGINEERING_OVERVIEW.md)
 
-The draft covers:
+Wilder approved the engineering overview after review of its technical emphasis, status wording, public-safety boundary and rendered Mermaid diagrams.
 
-- engineering-at-a-glance table;
-- public-safe platform capability map;
-- major subsystem inventory;
-- Home Signal Window logical model;
-- first-party media engineering;
-- Stage/MPlayer responsibilities;
-- Distributed Media Node provider model;
-- shipped/active/gated/planned matrix;
-- cross-cutting engineering concerns;
-- reliability principles;
-- resource/performance constraints;
-- multi-device behavior;
-- testing/verification ladder;
-- why the project is multidisciplinary.
-
-**Review gate:** Wilder checks technical emphasis, status wording, public safety and rendered Mermaid. Corrections land here before PF-4 opens.
+It establishes the vocabulary used by later documents across the application foundation, community state, Signal Window, first-party media, Stage/MPlayer, Distributed Media Node, governance, verification and multidisciplinary engineering concerns.
 
 ---
 
 # 10. PF-4 — Platform architecture
 
-**Status:** ⬜ QUEUED
+**Status:** 🟡 ACTIVE — draft published for Wilder review
 
-Create the first dedicated architecture document after PF-3 establishes shared vocabulary. Expected content includes browser/server logical boundaries, application/community/media responsibilities, control vs data planes, state authorities, provider policy, Studio/player media lifecycle, HOME_MEDIA/VPS_MEDIA roles, failure/fallback boundaries, persistence/identity relationships and the security/publication boundary.
+Artifact: [`docs/PLATFORM_ARCHITECTURE.md`](docs/PLATFORM_ARCHITECTURE.md)
+
+The draft covers:
+
+- overall logical system shape;
+- canonical identity vs presentation/storage;
+- authoritative state ownership;
+- failure-domain separation;
+- server-rendered application and progressive-enhancement boundary;
+- community/creator state;
+- Home logical feed architecture;
+- Stage/MPlayer playback authority;
+- first-party media lifecycle;
+- media control plane vs data plane;
+- HOME_MEDIA/VPS_MEDIA logical providers;
+- provider selection/fallback;
+- persistence/state scopes;
+- public-safe security boundary;
+- public playback and creator-upload sequence diagrams;
+- architecture evolution and current gates.
+
+**Review gate:** Wilder checks architectural truth, clarity, subsystem/state ownership, Mermaid rendering and disclosure safety. Corrections land here before PF-5 opens.
 
 ---
 
@@ -347,16 +353,17 @@ Engineering depth should be communicated through evidence and clarity rather tha
 
 # 24. Immediate gate
 
-**PF-0, PF-1 and PF-2 are approved and complete. PF-3 is active.**
+**PF-0 through PF-3 are approved and complete. PF-4 is active.**
 
-The engineering overview has been drafted from current private-repository evidence and published for Wilder review.
+The platform architecture has been drafted from current private-repository evidence and published for Wilder review.
 
 Next actions:
 
-1. review rendered `docs/ENGINEERING_OVERVIEW.md`;
-2. check status labels and technical emphasis;
-3. inspect every Mermaid graph for clipping/readability;
-4. request corrections if needed;
-5. explicitly approve PF-3 when satisfied.
+1. review rendered `docs/PLATFORM_ARCHITECTURE.md`;
+2. check subsystem boundaries and state ownership;
+3. inspect control/data-plane and provider/fallback wording;
+4. inspect all Mermaid/sequence diagrams for clipping/readability;
+5. request corrections if needed;
+6. explicitly approve PF-4 when satisfied.
 
-Only then mark **PF-3 ✅ COMPLETE**, set **PF-4 🟡 ACTIVE**, and begin `docs/PLATFORM_ARCHITECTURE.md`.
+Only then mark **PF-4 ✅ COMPLETE**, set **PF-5 🟡 ACTIVE**, and begin `docs/TECHNOLOGY.md`.
