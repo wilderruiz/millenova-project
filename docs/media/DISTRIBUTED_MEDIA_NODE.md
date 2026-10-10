@@ -5,29 +5,15 @@
 **Public publication authority:** `wilderruiz/millenova-project`  
 **Publication rule:** architecture is public; exploitable configuration is private.
 
-The **Millenova Distributed Media Node (DMN)** programme separates logical media identity from the physical place where media bytes are stored, processed and served.
-
-Its central rule is:
+The **Millenova Distributed Media Node (DMN)** programme separates logical media identity from the physical place where media bytes are stored, processed and served. First-party media made that separation necessary because large masters, multiple renditions and sustained playback create a very different infrastructure problem from ordinary web pages. DMN solves it by keeping one canonical media identity while letting backend policy choose the healthiest verified provider for each request. The result is a media system that can evolve its storage and delivery infrastructure without forcing Stage/MPlayer, playlists, reactions or discovery identity to care where the bytes physically live.
 
 > **The player asks for logical media. The backend decides which verified provider can safely serve it.**
-
-DMN does not create a second player, queue, post identity, reaction system or analytics stream. It operates underneath the existing first-party media and Stage/MPlayer contracts.
 
 ---
 
 ## 1. Why DMN exists
 
-First-party media introduced a different infrastructure profile from ordinary web pages:
-
-- creator masters may be large and high-bitrate;
-- 2160p / 4K renditions are materially larger than ordinary application assets;
-- 1080p needs to remain broadly available;
-- card previews should be small independent media objects rather than full playback streams;
-- continuously rotating media surfaces can create sustained egress;
-- catalogue growth can exceed the practical storage/egress envelope of one VPS;
-- a home-owned machine can contribute useful storage and processing capacity, but it must not become a single point of failure.
-
-The resulting architecture treats physical media locations as **logical providers**.
+**First-party media turns storage into a systems problem rather than a file-upload feature.** Creator masters can be large and high-bitrate, 2160p renditions are expensive to keep everywhere, 1080p needs to remain broadly available, previews should be lightweight, and continuously rotating media surfaces can consume sustained egress. DMN addresses that pressure by treating physical media locations as logical providers rather than hard-coded paths or one permanently authoritative server. That gives Millenova room to use home-owned storage and processing capacity without turning the home machine into a single point of failure.
 
 ```mermaid
 flowchart TD
@@ -39,84 +25,42 @@ flowchart TD
     VERIFY --> PLAYER["Stage<br/>MPlayer"]
 ```
 
-The browser does not select HOME or VPS directly. Provider selection remains a backend-owned policy decision.
+**The browser must never become the provider router.** If the client chose HOME or VPS directly, storage topology would leak into playback semantics and every infrastructure change would become a player change. DMN keeps that decision on the backend, where health, replica integrity and rendition availability can be evaluated together. The browser receives only the delivery result it needs, not the private operational details behind that choice.
 
 ---
 
 ## 2. Product semantics vs infrastructure semantics
 
-The parent first-party media programme owns product/media meaning:
-
-```text
-post identity
-media asset identity
-renditions
-attachment
-playback authority
-Stage / MPlayer
-Studio upload lifecycle
-Hero / Beats / Signals boundaries
-```
-
-DMN owns physical infrastructure mechanics:
-
-```text
-where bytes live
-which provider is healthy
-where processing may run
-which replica is verified
-which provider is preferred
-which provider is fallback
-how recovery works
-how replication is verified
-how storage / egress are measured
-```
-
-That separation prevents infrastructure work from silently redefining playback or social behavior.
-
-> **DMN may change where verified bytes come from without changing what track the listener is playing.**
+**DMN works because product meaning and infrastructure placement are deliberately different concerns.** The first-party media programme owns post identity, media-asset identity, renditions, attachment, playback authority, Stage/MPlayer behavior, Studio upload lifecycle and the Hero/Beats/Signals boundaries, while DMN owns where bytes live, which provider is healthy, where processing may run, which replica is verified and how fallback or recovery is handled. This separation prevents storage engineering from silently redefining social behavior, queue semantics or player identity. In practical terms, DMN may change where verified bytes come from without changing what track the listener is playing.
 
 ---
 
 ## 3. Current execution state
 
-The DMN programme is intentionally checkpointed so infrastructure and player work do not create one combined failure domain.
+**The DMN programme is intentionally phased so infrastructure work cannot destabilize the player by accident.** Provider foundation, the private HOME↔VPS transport bridge, provider-health policy, upload routing, verified replication and storage/egress observability are already established, while Checkpoint B is open for the first real delivery-integration work. DMN-4A is the active slice for production playback authorization/provider selection, and later DMN-5 recovery and player-facing delivery truth stay behind that proof. Catalogue-scale migration remains gated until delivery, fallback and recovery are demonstrated together.
 
 | Area | Current state | Meaning |
 |---|---|---|
 | **DMN-1** | **Complete** | HOME_MEDIA provider foundation / read proof |
 | **DMN-2** | **Complete** | Private HOME↔VPS transport bridge foundation |
 | **DMN-3** | **Complete** | Provider health + preferred/fallback router policy |
-| **Checkpoint B** | **Open** | Real playback-delivery integration is now authorized to proceed |
-| **DMN-4A** | **Active** | First real production playback-authorization/provider-selection slice |
+| **Checkpoint B** | **Open** | Real playback-delivery integration is authorized to proceed |
+| **DMN-4A** | **Active** | First production playback-authorization/provider-selection slice |
 | **DMN-5** | **Queued behind DMN-4 proof** | Recovery and player-facing delivery truth remain downstream |
 | **DMN-6** | **Complete** | Upload-provider routing foundation |
 | **DMN-7** | **Complete** | Verified replication/recovery foundation |
 | **DMN-8** | **Complete** | Storage/egress observability foundation |
 | **Catalogue-scale gate** | **Gated** | Bulk migration waits for delivery/fallback/recovery proof |
 
-This distinction matters: **provider architecture, replication and accounting are established, but the current production-delivery phase is still active rather than being presented as fully closed.**
+**The status language matters because the architecture is ahead of the production rollout.** It would be misleading to describe the entire HOME/VPS delivery system as closed simply because the provider model, replication and accounting are already in place. The public record therefore distinguishes foundation from active delivery integration. That keeps the document technically ambitious without pretending the unfinished part is already solved.
 
 ---
 
 ## 4. Control plane vs data plane
 
-DMN deliberately separates relatively small policy/state operations from heavy media-byte movement.
+**DMN becomes easier to reason about when policy state and heavy media traffic are treated as separate planes.** The control plane deals with provider health, rendition inventory, replica verification, storage readiness, upload routing, recovery state, deferred work, accounting and the final routing decision, while the data plane carries the expensive upload, playback, download and replication bytes. DMN keeps those responsibilities apart so provider policy can evolve without rewriting the mechanics of media transfer. This also leaves room for future transport changes, including a later edge/CDN layer, without changing canonical media identity.
 
 ### Control plane
-
-The control plane owns information such as:
-
-- provider health;
-- provider readiness;
-- rendition inventory;
-- replica verification;
-- storage availability;
-- upload routing;
-- recovery state;
-- deferred work;
-- accounting and observability;
-- playback/upload delivery decisions.
 
 ```mermaid
 flowchart TD
@@ -129,8 +73,6 @@ flowchart TD
 
 ### Data plane
 
-The data plane carries the expensive bytes:
-
 ```mermaid
 flowchart TD
     UP["Creator<br/>upload"] --> ORIGIN["Media<br/>origin"]
@@ -141,7 +83,7 @@ flowchart TD
     ORIGIN --> DL["Creator<br/>download"]
 ```
 
-Keeping these planes separate makes future infrastructure changes possible without changing the player-facing media identity contract.
+**This split is also an economics decision.** Health checks, metadata and integrity state are cheap compared with moving hundreds of megabytes of video. DMN can therefore make frequent control-plane decisions without pretending data-plane traffic is equally lightweight. That distinction is especially important for 4K playback, continuous Hero media and replica transfer.
 
 ---
 
@@ -149,44 +91,19 @@ Keeping these planes separate makes future infrastructure changes possible witho
 
 ### HOME_MEDIA — preferred provider
 
-HOME_MEDIA is the preferred high-capacity media provider when healthy and verified.
-
-Its intended responsibilities include:
-
-- creator-master storage;
-- 2160p / 4K rendition storage;
-- 1080p rendition storage;
-- short low-resolution preview storage;
-- poster/frame assets;
-- media inspection/processing capacity;
-- checksum verification;
-- replication source capability;
-- long-term catalogue storage.
-
-HOME_MEDIA is useful because it can contribute privately owned storage and compute capacity, but the architecture does **not** assume that home hardware or residential connectivity is continuously available.
+**HOME_MEDIA is the preferred high-capacity provider, not the sole source of truth for product identity.** The challenge is that Millenova wants to use privately owned storage and compute for creator masters, 4K, 1080p, previews, poster/frame assets, media inspection, processing, checksum verification and long-term catalogue growth without assuming the home machine or residential connectivity is continuously available. DMN solves that by making HOME preferred when healthy and verified while keeping all selection behind backend policy. This allows HOME to contribute substantial storage and processing capacity without becoming a hard dependency for basic playback continuity.
 
 ### VPS_MEDIA — independent fallback
 
-VPS_MEDIA remains an independently available provider whose purpose is resilience rather than exact duplication of every HOME byte.
-
-Its persistent catalogue role includes:
-
-- 1080p playback fallback;
-- short preview fallback;
-- poster/frame assets;
-- temporary private upload ingress when HOME is unavailable.
-
-A key invariant is:
+**VPS_MEDIA exists to preserve service continuity, not to clone every HOME byte.** Duplicating masters and 4K renditions permanently on both providers would erase much of the storage advantage of the distributed design and create unnecessary cost. DMN therefore gives VPS a narrower persistent role: 1080p fallback, short preview fallback, poster/frame assets and temporary private upload ingress when HOME is unavailable. The hard invariant is that the persistent production catalogue ceiling on VPS is 1080p, while durable 2160p/4K and creator-master storage belong to HOME.
 
 > **VPS_MEDIA persistent production catalogue ceiling = 1080p. HOME_MEDIA owns durable 2160p / 4K and creator-master storage.**
-
-That policy limits expensive duplication while preserving a useful production fallback.
 
 ---
 
 ## 6. Canonical media-tier policy
 
-For video that qualifies for the full rendition set, Millenova targets three different products rather than treating one file as suitable everywhere.
+**One rendition should not be forced to serve every product surface.** A hover card, an always-available Stage stream and a premium 4K playback session have different bandwidth and resilience requirements, so using one file everywhere would either waste bandwidth or sacrifice quality. Millenova therefore treats preview, standard and premium as distinct media products with different placement rules. The preview is a short low-resolution object on both providers, standard 1080p is also duplicated for fallback, and premium 2160p/4K remains HOME-only.
 
 | Tier | Target | Purpose | Persistent placement |
 |---|---|---|---|
@@ -207,13 +124,13 @@ flowchart TD
     UHD --> HOME
 ```
 
-The preview is intentionally an independent short object. A missing preview must not silently cause a card hover to spend a full 1080p playback stream.
+**The preview tier is intentionally independent of full playback.** If that lightweight object is missing, a card should not silently fall back to consuming a full 1080p production stream. The safer fallback is static artwork until the correct preview object exists. That keeps a small UI interaction from accidentally becoming a high-bandwidth media session.
 
 ---
 
 ## 7. HOME available vs HOME unavailable upload paths
 
-DMN is designed so a HOME outage lowers available capability without turning a valid creator upload into total failure.
+**A HOME outage should reduce capability, not erase the value of a successful creator upload.** The difficult case is a high-resolution source arriving while the preferred provider is unavailable, because the platform still wants preview and 1080p readiness without losing the source needed for future true 4K. DMN solves that by allowing a bounded private VPS ingest path, deriving useful fallback outputs there, and deferring the premium HOME work until the preferred provider returns. The creator keeps a successful upload experience and does not need to repeat a multi-gigabyte transfer just because one infrastructure tier was temporarily down.
 
 ### HOME available
 
@@ -242,17 +159,13 @@ flowchart TD
     RECOVER --> UHD["4K<br/>processing"]
 ```
 
-The creator should not need to upload again merely because HOME was temporarily unavailable.
-
-A higher-resolution source may therefore exist temporarily on VPS as a **private, non-playable ingest object** until verified HOME receipt permits the deferred premium path to continue.
-
-That temporary object is not a durable catalogue rendition and must not silently become permanent VPS master storage.
+**Temporary VPS source retention is a recovery tool, not a storage-policy loophole.** A higher-resolution creator master may need to remain privately on VPS long enough to produce 1080p and later transfer safely to HOME, but that object is non-playable and is not a durable catalogue rendition. Once HOME receipt is verified, retention can move to its explicit cleanup gate. This keeps source safety separate from long-term placement policy.
 
 ---
 
 ## 8. Deferred premium state is not failure
 
-A key product/infrastructure distinction is:
+**A valid 1080p video should not be marked failed simply because 4K is waiting for HOME.** Collapsing every incomplete rendition into one generic processing/error state would make a partial infrastructure outage look like a failed creator upload even when the standard production version is already healthy. DMN instead models premium work as a durable deferred enhancement, with restart-safe states for transfer, verification, processing and readiness. That means preview + 1080p can be publishable while 4K continues automatically later.
 
 ```text
 preview READY
@@ -261,8 +174,6 @@ preview READY
         ↓
 video is still publishable and playable
 ```
-
-Conceptual restart-safe states include:
 
 ```text
 PENDING_HOME_TRANSFER
@@ -274,17 +185,13 @@ HOME_TRANSFER_VERIFYING
 4K_READY
 ```
 
-The exact internal names may evolve, but the semantics must remain observable and durable.
-
-The important rule is:
-
-> **A HOME outage is a deferred enhancement when 1080p is valid, not a failed upload.**
+**The important product effect is that the creator is not asked to fix an infrastructure problem.** The exact internal state names may evolve, but the observable meaning must remain stable: 1080p works now, 4K is pending automatically, the source is safe and no re-upload is required. This is where infrastructure state becomes product experience. The system should present a deferred premium path, not a red failure state.
 
 ---
 
 ## 9. Provider selection
 
-For a new logical playback request, backend policy considers both provider health and verified rendition availability.
+**A healthy process is not enough to make a provider eligible for playback.** HOME might respond to a health check while the requested rendition is absent, incomplete or unverified, so reachability alone would produce false confidence. DMN resolves a playback request by combining provider health with rendition-specific verification and only then selecting HOME or VPS. If neither verified path exists, the correct result is a controlled unavailable response rather than guessing.
 
 ```mermaid
 flowchart TD
@@ -295,39 +202,13 @@ flowchart TD
     V -->|No| FAIL["Controlled<br/>unavailable"]
 ```
 
-Reachability alone is not enough. A provider can be alive while the requested rendition is absent or unverified.
-
-For premium Stage playback, the intended fallback behavior is straightforward:
-
-```text
-verified HOME 2160p available
-        ↓ yes
-serve premium rendition
-
-otherwise
-        ↓
-verified VPS 1080p available
-        ↓ yes
-serve HD fallback
-```
-
-The current programme has opened the production-delivery checkpoint and is actively implementing this real provider-selection path; it should not yet be described as fully closed end-to-end.
+**Premium fallback is intentionally asymmetric.** If verified HOME 2160p exists, Stage may use it; if HOME is unavailable but verified VPS 1080p exists, Stage falls back to HD rather than trying to manufacture premium availability from the wrong provider. The current programme is actively implementing this production selection path under DMN-4A. It is therefore public as the target and active slice, not falsely labelled as fully closed end-to-end.
 
 ---
 
 ## 10. Health, reachability and routing authority
 
-DMN distinguishes **process supervision** from **routing authority**.
-
-A process manager or transport supervisor may keep services alive, but it does not prove that a provider can serve the requested asset correctly.
-
-Routing therefore depends conceptually on evidence such as:
-
-- provider service health;
-- private transport reachability;
-- requested-rendition presence;
-- replica verification;
-- provider readiness state.
+**Process supervision keeps services running, but routing authority must prove service usefulness.** A process manager can report that something is alive while the private path is broken or the requested rendition is missing, which would be a dangerous signal to treat as sufficient. DMN therefore bases readiness on the combination of service health, private-path reachability, verified media presence and provider state. This prevents superficial process existence from becoming the production-routing truth.
 
 ```mermaid
 flowchart TD
@@ -337,15 +218,13 @@ flowchart TD
     READY --> POLICY["Routing<br/>policy"]
 ```
 
-This prevents a superficial "process exists" signal from becoming the authority for production media delivery.
+**This distinction also keeps operational tooling in its proper place.** A runtime supervisor may be essential for resilience, but it should never be the component that decides whether a viewer can safely receive a specific media object. Provider policy owns that judgment. The observable routing decision therefore reflects media truth rather than process-manager state.
 
 ---
 
 ## 11. Replication is copy + verification, not copy alone
 
-A distributed media system cannot call replication successful merely because bytes were transferred.
-
-A useful replica lifecycle is:
+**Moving bytes is not the same thing as creating a usable replica.** A transfer can complete with corruption, truncation, wrong metadata or the wrong object, so treating “copy finished” as “replica ready” would let damaged media enter the provider pool. DMN solves this by making checksum and metadata verification part of the replica lifecycle before the destination becomes eligible for routing. Source retirement remains downstream of verified destination state, not transfer initiation.
 
 ```mermaid
 flowchart TD
@@ -355,17 +234,13 @@ flowchart TD
     META --> READY["Replica<br/>ready"]
 ```
 
-The destination must prove that the expected object arrived intact before provider policy treats that replica as usable.
-
-This matters especially for destructive cleanup. Source retirement must remain downstream of verified destination state rather than transfer initiation.
+**This rule protects both resilience and cleanup safety.** A verified source should never be deleted merely because a destination transfer began or reported success at the transport layer. The receiving side must prove the expected bytes and media properties are actually present. That is what makes replication part of integrity management rather than simple file movement.
 
 ---
 
 ## 12. Recovery semantics
 
-DMN distinguishes **fallback** from **recovery**.
-
-Fallback keeps the application useful while the preferred path is unavailable. Recovery restores preference for later/new work after HOME becomes healthy again.
+**Fallback and recovery solve different problems.** Fallback keeps the platform useful while HOME is unavailable, whereas recovery restores HOME as the preferred provider after health, reachability and integrity are re-established. DMN therefore keeps active playback stable instead of switching origins mid-session merely because HOME came back online. Later/new authorizations can prefer HOME again, while detailed player-facing recovery behavior remains owned by the later DMN-5 work.
 
 ```text
 HOME healthy
@@ -383,19 +258,13 @@ health + reachability + integrity re-established
 new authorizations may prefer HOME again
 ```
 
-Active playback should not be jerked between origins merely because HOME recovered mid-session. Provider recovery is therefore a transport-policy problem, not a reason to rewrite current track identity.
-
-The later DMN-5 work owns the detailed player-facing recovery behavior after the active DMN-4 production-delivery proof.
+**The recovery model protects continuity from over-eager infrastructure automation.** A restored preferred provider is good news, but it should not create surprise state jumps for someone already watching a stable VPS-backed session. Recovery therefore changes eligibility for future policy decisions first. That keeps provider state separate from the identity and continuity of the current playback occurrence.
 
 ---
 
 ## 13. Hero is intentionally a different bandwidth policy
 
-Highest available Stage quality and Hero delivery do not have to share the same ceiling.
-
-The current DMN policy keeps **Hero at a maximum of 1080p on either provider**, even when HOME has a verified 4K Stage rendition.
-
-That avoids spending premium-bandwidth media continuously on a rotating/looping surface where the product value may not justify the cost.
+**Maximum quality is not automatically the correct policy for every surface.** Hero can rotate or loop continuously, so serving 4K there would multiply sustained egress without necessarily producing equivalent user value. DMN therefore caps Hero at 1080p on either provider while allowing Stage to reach 4K when HOME has a verified premium rendition. This makes bandwidth policy surface-specific instead of assuming every screen should request the largest available object.
 
 ```mermaid
 flowchart TD
@@ -405,89 +274,45 @@ flowchart TD
     VPS --> S1080["Stage<br/>1080p max"]
 ```
 
-This is an example of media policy being surface-specific rather than assuming "maximum quality everywhere" is automatically correct.
+**The distinction also gives product design a clearer vocabulary.** Stage is a deliberate playback destination where premium quality may justify its cost, while Hero is a persistent ambient/featured surface where predictable bandwidth matters more. The same media asset can therefore have different delivery ceilings depending on the surface using it. That is policy, not inconsistency.
 
 ---
 
 ## 14. Storage economics
 
-A distributed design is partly an engineering response to storage shape.
+**A fallback strategy only helps if its duplication cost is controlled.** If every provider permanently held the creator master, 4K rendition, 1080p rendition and preview, total storage would grow roughly as `2 × (M + U + H + P)` for source/master bytes `M`, 4K bytes `U`, 1080p bytes `H` and preview bytes `P`. DMN instead keeps the expensive master and premium tier on HOME while duplicating the much cheaper standard and preview tiers on VPS. The practical shape trends toward `HOME: M + U + H + P` and `VPS: H + P`, plus bounded temporary ingest during outages.
 
-If one video has:
-
-- source/master bytes `M`;
-- 4K rendition bytes `U`;
-- 1080p rendition bytes `H`;
-- preview bytes `P`;
-
-then duplicating every tier across both providers would require roughly:
-
-```text
-2 × (M + U + H + P)
-```
-
-The current placement policy instead trends toward:
-
-```text
-HOME: M + U + H + P
-VPS : H + P
-```
-
-plus bounded temporary ingest when HOME is unavailable.
-
-That dramatically changes the marginal cost of keeping a fallback without pretending fallback means complete byte-for-byte duplication of premium/archive tiers.
+**That placement model turns fallback into selective resilience rather than full mirroring.** The VPS carries enough durable media to preserve useful playback, but not every archive/premium byte. HOME keeps the high-capacity role where private storage economics are stronger. The result is lower duplication cost without pretending one provider can disappear with no quality trade-off at all.
 
 ---
 
 ## 15. Egress economics
 
-Home-owned storage does not mean bandwidth is physically free.
-
-For a rendition with average bitrate `b` bits/second and watch duration `t` seconds, approximate transferred bytes are:
+**Cheap storage does not make video bandwidth free.** A rendition with average bitrate `b` bits/second watched for `t` seconds transfers approximately `(b × t) / 8` bytes, and `n` full plays scale that roughly to `n × (b × t) / 8`. DMN therefore treats egress as something to observe directly instead of assuming home-hosted playback has zero marginal cost. Looping Hero media, repeated 4K plays and replication traffic can all turn a storage win into a bandwidth bottleneck if left invisible.
 
 ```text
 bytes ≈ (b × t) / 8
-```
 
-For `n` full plays:
-
-```text
 total bytes ≈ n × (b × t) / 8
 ```
 
-A looping Hero or repeatedly replayed 4K video can therefore turn into sustained outbound traffic even when storage itself is inexpensive.
-
-DMN accounting needs to make this visible rather than describing home egress as "free." Useful observability includes:
-
-- bytes served by provider;
-- storage used by media tier;
-- temporary-ingest pressure;
-- replica bytes transferred;
-- fallback-session counts;
-- deferred HOME work;
-- premium-rendition availability.
+**Useful accounting focuses on the decisions the system may actually need to change later.** Bytes served by provider, storage by media tier, temporary-ingest pressure, replica-transfer volume, fallback-session counts, deferred HOME work and premium-rendition availability all help show where the architecture is under pressure. These measurements should inform policy rather than merely decorate dashboards. That is why DMN-8 observability belongs in the architecture, not as an afterthought.
 
 ---
 
 ## 16. Preview economics
 
-Preview media is one of the simplest examples of architecture following economics.
-
-A 20–30 second low-resolution preview is cheap enough to duplicate across HOME and VPS, while a full 1080p or 4K stream is not an efficient default for tiny card interactions.
-
-This yields a useful product rule:
+**Preview media is the clearest example of product behavior being shaped by infrastructure cost.** A 20–30 second low-resolution preview is cheap enough to duplicate across HOME and VPS, while launching a full 1080p or 4K stream for a tiny hover interaction wastes bandwidth and can compete with real playback. DMN solves that mismatch by treating preview as its own short media object with its own placement policy. The broader rule is simple: use the cheapest media object that truthfully satisfies the surface.
 
 > **Use the cheapest media object that truthfully satisfies the surface.**
 
-Stage needs full playback. A hover card usually does not.
+**This does not mean “always choose low quality.”** Stage still deserves full playback because the listener explicitly asked to watch or listen there, while a card hover usually does not. The architecture therefore preserves quality where it matters and saves bandwidth where the interaction is transient. That is a better fit than one universal rendition policy.
 
 ---
 
 ## 17. Upload routing
 
-DMN reuses the existing first-party upload lifecycle rather than creating a second upload system.
-
-Conceptually:
+**DMN routes the existing upload lifecycle instead of inventing a second one.** The hard problem is physical destination choice, not creator identity, rights attestation, post identity or media-asset lifecycle, so rebuilding those semantics inside DMN would create duplicated authority. The provider policy therefore chooses HOME when appropriate and VPS when necessary, then hands the object back into the same first-party media lifecycle. Checkpoint C is already complete at the infrastructure level, while broad public creator rollout remains a separate product, rights and moderation decision.
 
 ```mermaid
 flowchart TD
@@ -498,15 +323,13 @@ flowchart TD
     VPS --> LIFE
 ```
 
-The upload-provider decision changes physical destination, not creator identity, post identity, media-asset lifecycle or rights semantics.
-
-Checkpoint C has been completed in the private programme: upload routing, verified replication/recovery foundation and accounting are established. Broader public creator rollout remains a separate product/rights/moderation decision.
+**This keeps one creator/media contract regardless of provider health.** A creator does not acquire a different kind of post because their upload was temporarily received through VPS, and the platform does not create a second rights model for fallback ingest. Provider selection changes physical placement only. Product identity remains stable.
 
 ---
 
 ## 18. Diagnostics should expose truth, not topology
 
-Player diagnostics may eventually show non-sensitive delivery truth such as:
+**Good diagnostics should explain what the system decided without revealing how to attack it.** For player debugging it can be genuinely useful to know that HOME is active, VPS fallback is active, HOME is recovering, which rendition is playing or whether fallback is ready. DMN therefore aims to expose delivery class and readiness truth while withholding private addresses, ports, tunnel coordinates, storage paths, credentials, signing material and privileged commands. The result is observable behavior without publishing the operational topology behind it.
 
 ```text
 HOME active
@@ -516,40 +339,13 @@ active rendition = HD / 4K
 fallback ready = yes / no
 ```
 
-That can be useful in Stats for Nerds because it helps diagnose whether a quality change came from network policy, provider health or rendition availability.
-
-Diagnostics must not expose:
-
-- private addresses;
-- private ports;
-- tunnel coordinates;
-- storage paths;
-- credentials;
-- signing material;
-- privileged operational commands.
-
-The goal is **observable behavior without publishing attack surface**.
+**Stats for Nerds is the natural home for this public-safe truth.** It can help explain why a quality change occurred without forcing the user or engineer to inspect private infrastructure. That also makes diagnostics part of the provider contract rather than a collection of ad hoc debug strings. DMN-5 remains the later phase that turns this into player-facing delivery truth.
 
 ---
 
 ## 19. Private transport and future edge/CDN evolution
 
-The current architecture allows a private HOME↔VPS transport path for the initial proof, but the logical provider model does not require every future viewer byte to travel through one fixed topology forever.
-
-That is why the public architecture talks in terms of:
-
-```text
-provider
-health
-capability
-verified rendition
-origin
-replica
-```
-
-rather than baking one transport route into Stage/MPlayer.
-
-A future edge/CDN layer could sit in front of one or both origins while preserving the same logical asset/provider contract.
+**The current private HOME↔VPS path should not become a permanent architectural prison.** The initial proof can use a private transport bridge, but if Stage/MPlayer depended on that topology directly, every future origin or CDN change would become a playback rewrite. DMN avoids that by expressing the public contract in terms of provider, health, capability, verified rendition, origin and replica. A future edge/CDN layer can therefore sit in front of one or both origins without changing canonical media identity or the player-facing contract.
 
 ```mermaid
 flowchart TD
@@ -559,11 +355,13 @@ flowchart TD
     EDGE --> VPS["VPS_MEDIA"]
 ```
 
-**Status:** edge/CDN delivery is a future architectural option, not a current production dependency.
+**Edge/CDN delivery is an architectural option, not a current dependency.** The public document includes it because the current abstractions are deliberately designed not to block that evolution later. No current production claim depends on an edge layer already existing. That distinction keeps the roadmap visible without mixing future architecture into present-state truth.
 
 ---
 
 ## 20. Failure-domain model
+
+**A resilient media system should degrade by capability instead of collapsing into one generic failure.** HOME may be unhealthy, the private path may be unreachable, a replica may be missing, a transfer may be interrupted, a checksum may fail or the player may still be under transport stabilization, and each condition has a different correct response. DMN handles those cases by failing closed at the provider boundary, using verified VPS fallback where available, preserving source bytes during uncertain transfers and stopping cross-system rollout when another subsystem is not ready. This checkpointed approach makes failures diagnosable because provider, integrity, transport and player problems are not deliberately mixed together.
 
 | Failure | Desired behavior |
 |---|---|
@@ -576,29 +374,23 @@ flowchart TD
 | Destination checksum mismatch | Replica remains unusable |
 | HOME recovers | Re-establish health/integrity, then prefer for later/new work |
 | Observability unavailable | Do not let missing metrics redefine actual provider truth |
-| Player transport unstable | Stop cross-system rollout rather than debugging provider and player semantics simultaneously |
+| Player transport unstable | Stop cross-system rollout rather than debug provider and player semantics simultaneously |
 
-This is why DMN is checkpointed instead of being introduced as one large infrastructure rewrite.
+**The table is intentionally a behavior map, not a list of implementation internals.** It shows what the system should do when each class of failure occurs without exposing private topology or bypass details. That makes the document useful for architectural review while preserving operational safety. It also gives later tests a clear set of behaviors to prove.
 
 ---
 
 ## 21. Why the design borrows from provider fallback but not blindly
 
-The provider-selection idea came from an already useful pattern: keep one stable application contract, prefer a capable provider, fall back independently, then recover later.
-
-Media adds a crucial difference: **the payload is much heavier**.
-
-Provider health checks are cheap. A 4K play is not.
-
-Therefore the architecture reuses the control-plane idea while introducing media-specific placement, replication, integrity, preview tiers and bandwidth accounting.
-
-The lesson is not "copy another system." It is:
+**DMN reuses a proven provider-selection idea, not somebody else's data plane.** The useful pattern is to keep one stable application contract, prefer a capable provider, fall back independently and recover later, but media is fundamentally heavier than ordinary request/response workloads. DMN therefore keeps that control-plane idea while redesigning storage tiers, integrity verification, preview objects, replica policy and bandwidth accounting around large video payloads. The engineering lesson is to reuse the stable control pattern while adapting the byte-moving layer to the actual workload.
 
 > **Reuse the proven control pattern; redesign the data plane for the actual workload.**
 
 ---
 
 ## 22. Current DMN status boundary
+
+**The public record separates what is structurally complete from what is still being proven in production.** HOME/VPS provider identity, the read foundation, private transport bridge, health/router policy, upload routing, replication/recovery foundation and accounting already exist, while Checkpoint B is now open and DMN-4A is the active production authorization/provider-selection slice. Mid-playback recovery and player-facing diagnostics remain queued behind that proof, catalogue-scale migration is still gated, and CDN/edge remains a future option. This status boundary prevents the architecture diagram from being mistaken for a claim that every operational phase is already closed.
 
 | Capability | Status | Public interpretation |
 |---|---|---|
@@ -620,32 +412,10 @@ The lesson is not "copy another system." It is:
 
 ## 23. Public security boundary
 
-This document intentionally exposes system architecture while withholding exploit-enabling operational detail.
-
-It does **not** publish:
-
-- production IP addresses or private hostnames;
-- exact tunnel endpoints or private port mappings;
-- SSH credentials/configuration;
-- production signing secrets;
-- storage-root filesystem paths;
-- privileged deployment commands;
-- private creator/media records;
-- raw operational capability material;
-- firewall rules or bypass procedures.
-
-What is public is the engineering model: logical providers, server-side policy, verified replicas, fallback semantics, deferred premium work, tier placement, observability and recovery boundaries.
+**DMN is intentionally transparent about architecture while remaining strict about operational secrets.** The public document explains logical providers, server-side selection, verified replicas, fallback semantics, deferred premium work, tier placement, observability and recovery because those ideas are valuable engineering content. It omits production IP addresses, private hostnames, exact tunnel/port mappings, SSH configuration, signing secrets, storage-root paths, privileged deployment commands, private creator/media records and firewall/bypass details. That preserves the principle that architecture can be public without publishing the keys required to cross the production boundary.
 
 ---
 
 ## 24. Related public documents
 
-- [Native media engineering](NATIVE_MEDIA_ENGINEERING.md)
-- [Platform architecture](../PLATFORM_ARCHITECTURE.md)
-- [Technology map](../TECHNOLOGY.md)
-- [Engineering overview](../ENGINEERING_OVERVIEW.md)
-- [What is published here](../../WHAT_IS_PUBLISHED_HERE.md)
-- [Public facade implementation plan](../../MILLENOVA_PUBLIC_FACADE_IMPLEMENTATION_PLAN.md)
-- [Mermaid graph guide](../../agents/MERMAID_GRAPH_GUIDE.md)
-
-The next publication step after PF-7 review is `../player/MPLAYER.md`, which moves upward from physical media-provider infrastructure to the persistent playback/queue/transport system that consumes the media contract.
+The DMN document is most useful when read as the infrastructure layer beneath the already-published native-media and platform architecture material. [`NATIVE_MEDIA_ENGINEERING.md`](NATIVE_MEDIA_ENGINEERING.md) explains canonical media identity and playback, [`PLATFORM_ARCHITECTURE.md`](../PLATFORM_ARCHITECTURE.md) explains the broader state boundaries, and [`TECHNOLOGY.md`](../TECHNOLOGY.md) maps the runtime/tooling responsibilities. The public-facade plan and agent guides remain the process authority for how these documents are reviewed and advanced. The next publication step after PF-7 review is `../player/MPLAYER.md`, which moves upward from physical provider infrastructure to persistent playback, queue and transport semantics.
