@@ -80,11 +80,12 @@ ZGitPet is used as an accelerator for multi-project repository work, project swi
 
 - [Engineering overview](docs/ENGINEERING_OVERVIEW.md) — broad technical map, subsystem inventory, current status, constraints and verification model.
 - [Platform architecture](docs/PLATFORM_ARCHITECTURE.md) — logical system boundaries, state authorities, media control/data planes, provider policy and cross-system request flows.
+- [Technology map](docs/TECHNOLOGY.md) — maps PHP, JavaScript, SQL, Node, media tooling, browser APIs, identity, analytics, testing and operations to their actual engineering responsibilities.
 - [What is published here](WHAT_IS_PUBLISHED_HERE.md) — the public/private boundary and agent rules.
 - [Public facade implementation plan](MILLENOVA_PUBLIC_FACADE_IMPLEMENTATION_PLAN.md) — the step-by-step, review-first programme used to build this repository.
 - [Shared agent workspace](agents/README.md) — reusable process guidance for agents working on the public facade.
 
-The deeper engineering documents are being added one at a time and reviewed before the next publication step begins. Planned topics include the technology map, native-media pipeline, Distributed Media Node, MPlayer, Signal Window, creator workflows, social systems, moderation, testing and product evolution.
+The deeper engineering documents are being added one at a time and reviewed before the next publication step begins. Planned topics include the native-media pipeline, Distributed Media Node, MPlayer, Signal Window, creator workflows, social systems, moderation, testing and product evolution.
 
 ## Implementation boundary
 
