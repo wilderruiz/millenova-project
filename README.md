@@ -1,63 +1,87 @@
 # Millenova
 
-**Public engineering, architecture, experiments and development record for Millenova — a native-media music discovery and creator platform.**
+**Public engineering, architecture, experiments and development record for Millenova — a native-media, provider-aware music discovery and creator platform.**
 
-Millenova began as an artist website and has been evolving into a broader music platform with creator publishing, discovery, persistent playback, social state, first-party media, moderation, search, playlists and distributed media infrastructure.
+Millenova began as an artist website and has evolved into a broader community platform with creator publishing, one public Home chronology, persistent playback, social state, first-party media, provider-specific playback surfaces, moderation, search, playlists and distributed media infrastructure.
 
-This repository is the **public engineering facade** for that work. The production implementation remains private; the architecture, engineering decisions, experiments, failure analysis and verification history are published here when they are safe and useful to make public.
+This repository is the **public engineering facade** for that work. The production implementation remains private; architecture, decisions, experiments, failure analysis and verification history are published here when they are safe and useful to make public.
 
 > **Publication rule:** architecture is public; exploitable configuration is private.
 
-## Engineering surface
+## The architecture changed
+
+Millenova no longer treats every playable Home item as something that should collapse into one universal physical player. **Home is the universal discovery surface; playback is capability-scoped.** Native Millenova media belongs to Millenova Stage, YouTube/YouTube Music belongs to a YouTube Stage, Spotify belongs to a Spotify Stage, SoundCloud belongs to a SoundCloud Stage, and rich/text/image content belongs to a Rich Post Stage.
+
+That shift also retires the earlier separate **Signals** product direction before implementation. External-provider references and future rich/text/image/link/article posts belong in the same approved Home chronology rather than a second feed or second social graph. Provider-scoped playback playlists remain strongly typed, while a universal Saved/Collection concept may later hold mixed artifact types without promising mixed-provider continuous playback.
 
 ```mermaid
 flowchart TD
-    USER["Listener<br/>creator"]
-    WEB["Millenova<br/>web app"]
-    FEED["Discovery<br/>feed"]
-    STUDIO["Creator<br/>Studio"]
-    PLAYER["Stage<br/>MPlayer"]
-    SOCIAL["Social<br/>state"]
-    MEDIA["First-party<br/>media"]
-    ROUTER["Media provider<br/>policy"]
-    HOME["HOME_MEDIA"]
-    VPS["VPS_MEDIA"]
+    USER["Listener<br/>creator"] --> HOME["Home<br/>chronology"]
 
-    USER --> WEB
-    WEB --> FEED
-    WEB --> STUDIO
-    WEB --> PLAYER
-    WEB --> SOCIAL
-    STUDIO --> MEDIA
-    PLAYER --> MEDIA
-    MEDIA --> ROUTER
-    ROUTER -->|Preferred| HOME
-    ROUTER -->|Fallback| VPS
+    HOME --> NATIVE["Millenova<br/>Stage"]
+    HOME --> YT["YouTube<br/>Stage"]
+    HOME --> SP["Spotify<br/>Stage"]
+    HOME --> SC["SoundCloud<br/>Stage"]
+    HOME --> RICH["Rich Post<br/>Stage"]
+
+    STUDIO["Creator<br/>Studio"] --> MEDIA["Native<br/>media"]
+    MEDIA --> VIDEO["Video<br/>renditions"]
+    MEDIA --> AUDIO["Audio<br/>genome"]
+
+    VIDEO --> NATIVE
+    AUDIO --> NATIVE
+
+    NATIVE --> DMN["Distributed<br/>media"]
 ```
 
-This diagram is deliberately logical rather than operational. It shows the public engineering model without publishing production network coordinates, credentials, secrets or other exploit-enabling configuration.
+The diagram is logical, not operational. Provider-specific Stage families and Rich Post Stage are the approved architecture direction; implementation is deliberately sequenced behind the current first-party native-media acceptance work rather than being claimed as fully shipped already.
+
+## Current `index.php` / Home reality
+
+The current production Home entry point is still a server-rendered PHP orchestration shell, not a client-only application and not a provider-specific Stage. It composes the Hero spotlight, community principles, a Millenova release rail, signed-in playlist and reaction-library access, track statistics, the **Freshly released** feed, Home search, deterministic continuation, hover-preview hooks and the persistent Stage host/deep-link contract. Its JavaScript layer then adds the logical Home store, pagination, render-window/virtualization work and browser-owned scrolling without making the mounted DOM the canonical feed authority.
+
+That current index matters because the new architecture is being layered onto a working Home rather than replacing it wholesale. The approved Home orchestration plan keeps one public chronology and makes the index route artifacts into the correct capability family; it does **not** turn `index.php` into a second player, a second publication feed or a place where provider-specific playback rules are invented ad hoc.
 
 ## What is being engineered
 
 | Area | Engineering focus |
 |---|---|
-| **Native media** | First-party media identity, source analysis, renditions, resumable ingest, playback authorization, HTTP range/seek behavior and recovery |
-| **Distributed media** | Preferred home-owned media capacity with independent VPS fallback, health checks, verified replication, recovery and bandwidth/storage observability |
-| **Stage / MPlayer** | Persistent playback ownership, queue semantics, native/external media adapters, quality state, mobile/desktop controls and transport continuity |
-| **Home feed** | Deterministic continuation, logical feed state independent of the DOM, render-window virtualization, geometry conservation and browser-owned native scrolling |
-| **Creator workflow** | Studio publishing, upload lifecycle, media attachment and controlled transition from creator input to playable media |
-| **Discovery** | Search, freshness, Beats isolation, structured music metadata and evolving taxonomy/discovery work |
-| **Social systems** | Reactions, playlists, persistent Now Playing state, queue continuity and shared community surfaces |
-| **Governance** | Reporting, moderation, abuse resilience, public policy surfaces and controlled administration |
-| **Verification** | Static checks, validators, automated tests, local/browser smoke, physical-device smoke and production smoke where required |
+| **Home / index orchestration** | One public chronology, deterministic cursor/snapshot state, search, virtualization, common post identity and capability-based Stage routing |
+| **Stage families** | Native Millenova, YouTube, Spotify, SoundCloud and Rich Post Stage boundaries with provider-scoped playback semantics |
+| **Native video** | First-party media identity, resumable ingest, source analysis, verified renditions, range playback, quality truth and recovery |
+| **Native audio genome** | Canonical audio normalization, creator sprite generations, immutable Artifact DNA, stable loci/alleles, verified evolution and expression manifests |
+| **Audio Visual Engine** | Browser-side Web Audio analysis with adaptive WebGL/Canvas/CSS visual rendering that never becomes required for audio playback |
+| **Distributed media** | HOME_MEDIA preference, VPS_MEDIA fallback, verified replication, delivery routing, recovery and storage/egress observability |
+| **Creator workflow** | Smart native publishing, MP4/MP3 upload, metadata suggestions, preview/publish gates and later provider-aware unified publishing |
+| **Social systems** | Reactions, provider-scoped playback playlists, persistent Now Playing state and universal non-playback Saved/Collection direction |
+| **Governance** | Reporting, moderation, abuse resilience and common visibility authority across Home/search/Stage |
+| **Verification** | Static checks, validators, automated tests, browser/device smoke and production/runtime acceptance where required |
 
 ## Current engineering focus
 
-The current infrastructure programme is the **Distributed Media Node (DMN)**: separating logical media identity from physical storage so Millenova can prefer a trusted home media node for storage/processing while retaining the VPS as an independent fallback. Provider foundations, upload routing, verified replication/recovery and accounting are established. The production-delivery checkpoint is now open, with the first real HOME/VPS playback-authorization/provider-selection slice active rather than being presented as fully closed.
+The primary execution chain has moved beyond the earlier DMN-first snapshot. **Execution plan 1 is currently finishing FP-7G runtime acceptance and the FP-7G.15 Biological Cyber DNA architecture for native audio**, while DMN continues in parallel beneath the native media contract. FP-7A through FP-7F are complete; the active audio work treats accepted creator masters as immutable Artifact DNA, preserves stable semantic track loci across replacement, builds verified generations, and expresses playback through the conceptual `RNA Polymerase → mRNA manifest → Ribosome` path.
 
-A related media-policy direction is to avoid spending full 1080p bandwidth on small hover surfaces: card previews are intended to use dedicated short low-resolution preview renditions rather than the full playback rendition.
+The distributed-media programme has also advanced: HOME/VPS authorization and real HOME byte-range playback plus the hard VPS 1080p fallback path are complete through DMN-4C, while the Hero-specific 1080p routing slice is active. These are infrastructure concerns beneath native media; they do not decide Home post identity or provider-family membership.
 
-The broader platform continues to evolve in parallel across first-party playback, Stage/MPlayer transport, feed virtualization/readiness, creator workflows and public-launch hardening.
+After the first-party native contract is accepted, the numbered architecture proceeds deliberately: **Stage Families + Smart Publishing → Rich Posts → Home Orchestration → Governance/Policy closeout.** This order prevents Home/index, provider playback, rich content and policy from being developed against unstable media semantics.
+
+## Native audio: immutable genome, derived expression
+
+For native MP3/WAV, Millenova now separates the accepted creator artifact from later encoded playback generations. An accepted master receives immutable **Artifact DNA**; a published semantic track owns a stable **locus**; replacement creates a new independently verified **allele** at that locus instead of rewriting the old artifact. Active members are assembled into a candidate generation, proofread against deterministic boundary evidence, and only then become expression-eligible.
+
+```mermaid
+flowchart TD
+    MASTER["Creator<br/>master"] --> GATE["Immune<br/>Gate"]
+    GATE --> DNA["Artifact<br/>DNA"]
+    DNA --> LOCUS["Locus +<br/>allele"]
+    LOCUS --> LIGASE["Ligase<br/>generation"]
+    LIGASE --> PROOF["Genome<br/>Proofreader"]
+    PROOF --> RNA["RNA<br/>Polymerase"]
+    RNA --> MRNA["mRNA<br/>manifest"]
+    MRNA --> RIBO["Ribosome<br/>playback"]
+```
+
+Old healthy generations remain immutable and reproducible. Replaced or legacy alleles can be silenced from future expression without pretending they never existed, and later decommissioning is explicitly separated from replacement so historical, rollback and recovery references can be respected before physical purge.
 
 ## Why the public repository exists
 
@@ -79,19 +103,17 @@ ZGitPet is used as an accelerator for multi-project repository work, project swi
 ## Start here
 
 - [Engineering overview](docs/ENGINEERING_OVERVIEW.md) — broad technical map, subsystem inventory, current status, constraints and verification model.
-- [Platform architecture](docs/PLATFORM_ARCHITECTURE.md) — logical system boundaries, state authorities, media control/data planes, provider policy and cross-system request flows.
-- [Technology map](docs/TECHNOLOGY.md) — maps PHP, JavaScript, SQL, Node, media tooling, browser APIs, identity, analytics, testing and operations to their actual engineering responsibilities.
-- [Native media engineering](docs/media/NATIVE_MEDIA_ENGINEERING.md) — deep dive into first-party asset identity, resumable 4K ingest, source analysis, rendition benchmarking, verification, attachment, playback authorization and browser-native playback.
-- [Distributed Media Node](docs/media/DISTRIBUTED_MEDIA_NODE.md) — provider routing, HOME/VPS tier placement, replication, failover/recovery, deferred 4K work and storage/egress economics.
-- [MPlayer](docs/player/MPLAYER.md) — persistent Stage/player ownership, adapter boundaries, queue occurrence/context semantics, NEXT FROM vs UP NEXT, Repeat/Shuffle, quality, mobile/desktop HUD behavior and future remote playback.
+- [Platform architecture](docs/PLATFORM_ARCHITECTURE.md) — logical state boundaries, current Home/index ownership, Stage-family direction and native/distributed-media architecture.
+- [Technology map](docs/TECHNOLOGY.md) — maps PHP, JavaScript, SQL, Node, media tooling, browser APIs, identity, analytics, testing and operations to engineering responsibilities.
+- [Native media engineering](docs/media/NATIVE_MEDIA_ENGINEERING.md) — first-party video plus the newer native-audio/sprite/genome architecture.
+- [Distributed Media Node](docs/media/DISTRIBUTED_MEDIA_NODE.md) — HOME/VPS routing, tier placement, replication, fallback/recovery and storage/egress economics.
+- [MPlayer](docs/player/MPLAYER.md) — current native Stage/MPlayer authority plus the corrected boundary with the upcoming provider-scoped Stage-family architecture.
 - [What is published here](WHAT_IS_PUBLISHED_HERE.md) — the public/private boundary and agent rules.
-- [Public facade implementation plan](MILLENOVA_PUBLIC_FACADE_IMPLEMENTATION_PLAN.md) — the step-by-step, review-first programme used to build this repository.
+- [Public facade implementation plan](MILLENOVA_PUBLIC_FACADE_IMPLEMENTATION_PLAN.md) — the review-first programme used to build and correct this repository.
 - [Shared agent workspace](agents/README.md) — reusable process guidance for agents working on the public facade.
-
-The deeper engineering documents are being added one at a time and reviewed before the next publication step begins. Planned topics now include Signal Window, creator workflows, social systems, moderation, testing and product evolution.
 
 ## Implementation boundary
 
 The live implementation repository is private. This public repository may document real subsystem names, logical architecture, state machines, provider roles, failure modes, benchmarks, experiments and engineering decisions, but it does not publish secrets, private production addresses, credentials, sensitive user data, private filesystem paths, exploit-enabling security configuration or other restricted operational material.
 
-Millenova is active research and development software; documentation distinguishes shipped, validating, active, experimental, planned, gated, superseded and rejected work rather than presenting all roadmap items as completed features.
+Millenova is active research and development software. Public documentation distinguishes current runtime, approved next architecture, active validation, queued implementation, superseded directions and rejected approaches instead of flattening them into one misleading picture.
